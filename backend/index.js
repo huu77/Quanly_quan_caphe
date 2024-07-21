@@ -8,15 +8,13 @@ const port = process.env.PORT || 3333;
 const compression = require('compression');
 const cors = require('cors');
 const morgan = require('morgan');
-
+const routers = require('./src/modules/router')
 require('./src/config/index')
 app.use(cors());
 app.use(compression());
 app.use(morgan('combined'));
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+app.use('/api/v1',routers)
 
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);

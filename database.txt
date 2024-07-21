@@ -1,11 +1,11 @@
 
 CREATE TABLE Role (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Account (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
     password VARCHAR(50) NOT NULL,
     role_id INT,
@@ -13,7 +13,7 @@ CREATE TABLE Account (
 );
 
 CREATE TABLE Profile (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     firstname VARCHAR(50) NOT NULL,
     lastname VARCHAR(50) NOT NULL,
     address VARCHAR(200) NOT NULL,
@@ -24,12 +24,12 @@ CREATE TABLE Profile (
 );
 
 CREATE TABLE Status (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     name VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE Notifications (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     profile_id INT NOT NULL,
     content VARCHAR(200) NOT NULL,
     status_id INT NOT NULL,
@@ -40,12 +40,12 @@ CREATE TABLE Notifications (
 );
 
 CREATE TABLE Category (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE Product (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     name VARCHAR(30) NOT NULL,
     description VARCHAR(200) NOT NULL,
     image VARCHAR(500) NOT NULL,
@@ -55,19 +55,19 @@ CREATE TABLE Product (
 );
 
 CREATE TABLE RestaurantTable (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     ORstring VARCHAR(200) NOT NULL,
     name VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE Customer (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     name VARCHAR(10) NOT NULL,
     phoneNumber VARCHAR(12) NOT NULL
 );
 
 CREATE TABLE `Order` (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     user_id INT NOT NULL,
     table_id INT NOT NULL,
     status_id INT NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE `Order` (
 );
 
 CREATE TABLE OrderDetail (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     item_name VARCHAR(30) NOT NULL,
     quantity INT NOT NULL,
     price INT NOT NULL,
@@ -92,12 +92,12 @@ CREATE TABLE OrderDetail (
 );
 
 CREATE TABLE TableStatus (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE TableDetail (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     table_id INT NOT NULL,
     table_status_id INT NOT NULL,
     start_time DATETIME NOT NULL,
@@ -112,7 +112,7 @@ CREATE TABLE TableDetail (
 );
 
 CREATE TABLE Payment (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT  PRIMARY KEY,
     order_id INT NOT NULL,
     customer_id INT NOT NULL,
     amount INT NOT NULL,
