@@ -1,27 +1,37 @@
-// db.js
-
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const dotenv = require('dotenv');
 
 // Tải các biến môi trường từ tệp .env
 dotenv.config();
 
-// Tạo kết nối đến cơ sở dữ liệu MySQL
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME
-});
+// Tạo một đối tượng singleton cho kết nối cơ sở dữ liệu
+class Database {
+  constructor() {
+    if (!Database.instance) {
+      this.pool = mysql.createPool({
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASS,
+        database: process.env.DB_NAME,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
+      });
 
-// Kết nối đến cơ sở dữ liệu
-connection.connect((err) => {
-  if (err) {
-    console.error('Error connecting to the database:', err.stack);
-    return;
+      Database.instance = this;
+    }
+
+    return Database.instance;
   }
-  console.log('Connected to the database.');
-});
 
-// Export kết nối để sử dụng trong các phần khác của ứng dụng
-module.exports = connection;
+  // Phương thức để lấy pool kết nối
+  getPool() {
+    return this.pool;
+  }
+}
+
+// Tạo và xuất đối tượng singleton
+const instance = new Database();
+Object.freeze(instance);
+
+module.exports = instance;
