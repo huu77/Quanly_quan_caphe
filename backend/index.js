@@ -9,6 +9,7 @@ const compression = require('compression');
 const cors = require('cors');
 const morgan = require('morgan');
 
+require('./src/config/index')
 app.use(cors());
 app.use(compression());
 app.use(morgan('combined'));
