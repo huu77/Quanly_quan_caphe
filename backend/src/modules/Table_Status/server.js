@@ -42,7 +42,29 @@ const getMuiltiStatusServer = async () => {
   }
 };
 
+const createStatusServer = async (name) => {
+  const sql = 'INSERT INTO Status (name) VALUES (?)';
+  
+  try {
+    // Sử dụng pool.query từ mysql2/promise
+    const [result] = await pool.query(sql, [name]);
+
+    // Kiểm tra số lượng bản ghi bị ảnh hưởng
+    if (result.affectedRows === 0) {
+      return ResponseStatus.createResponse(404, null); // Không có bản ghi được thêm
+    }
+
+    // Trả về kết quả thành công với mã trạng thái 201 (Created)
+    return ResponseStatus.createResponse(201, { id: result.insertId, name });
+
+  } catch (error) {
+    // Xử lý lỗi với mã trạng thái 500
+    console.error('Database query error:', error); // Ghi lại lỗi để kiểm tra
+    return ResponseStatus.createResponse(500, error.message);
+  }
+};
 module.exports = {
   getStatusServer,
-  getMuiltiStatusServer
+  getMuiltiStatusServer,
+  createStatusServer
 };
