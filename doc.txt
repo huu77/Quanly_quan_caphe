@@ -1,0 +1,36 @@
+- khách hàng quét mã qr , truy cập ứng dụng . Xem menu ,gọi cà phê (Xác thực bằng số điện thoại) , tính tiền.
+- Nhân viên pha chế : thông báo nhắc người phục vụ mang cà phê cho khách.
+- Nhân viên phục vụ : cho khách đổi bàn , hủy yêu cầu , thu tiền.
+- Hệ thống sẽ tự động hiển thị các thông tin nhân viên bằng cơ chế push.
+
+========================================
+
+* khách hàng : 
+-> quét qr 
+có quyền xem menu,
+sau đó món thì xác thực bằng điện thoại -> otp .
+tính tiền : có thể dùng thanh toán hoặc tiền mặc.
+Xem được trạng thái món : có thể thay đổi món trong trạng thái đã nhận món gửi socket đến star 
+
+- Nhân viên pha chế :
+có tài khoản đăng nhập với role pha chế:
+nhận thông báo với socket từ khách hàng order món.
+và gửi thông báo món cho nhân viên phục vụ
+
+-Nhân viên phục vụ: 
+cho khách hàng đổi bàn thì chuyển bàn cho khách hàng trên giao diện . Cập nhập lại mã bàn cho khách.
+Hủy món, thay đổi món khác trong thời gian món đã chọn mà chưa đang đợi. 
+các trạng thái của món: đã nhận món, bắt đầu làm món, món hoàn thành , món đã hủy.
+thu tiền : nhận tiền trực tiếp , giá trị của món bao nhiêu, nhân bao nhiêu , trả bao nhiêu , thanh toán bao nhiêu dưới tên nhân viên đó.
+thanh toán online: -> gửi socket về cho nhân viên biết sau khi khách hàng thành toán, viết api gửi về tự update .
+Nhận thông tin món ( trạng thái món ) : đưa món cho khách, hoặc báo khách về trạng thái của món.
+
+- Quản lý :
+Role quản lý.
+Danh sách thông tin nhan viên: crud.
+Thống kê tiền, số lượng món đã đặt của khách trong khỏa thời gian ngày , tuần , tháng, quý.
+Xem chi tiết được table vào lúc đó ,ca đó ai quản lý.
+
+
+#########################
+Link : https://app.diagrams.net/#G1Qa_V3BmTqdpvFfeba3sw_NWKj_r_GleP#%7B%22pageId%22%3A%22rM4Mu0wTbHNt-BGWFliI%22%7D
