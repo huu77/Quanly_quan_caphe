@@ -1,0 +1,125 @@
+
+CREATE TABLE Role (
+    id INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Account (
+    id INT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    role_id INT,
+    FOREIGN KEY (role_id) REFERENCES Role(id)
+);
+
+CREATE TABLE Profile (
+    id INT PRIMARY KEY,
+    firstname VARCHAR(50) NOT NULL,
+    lastname VARCHAR(50) NOT NULL,
+    address VARCHAR(200) NOT NULL,
+    phoneNumber VARCHAR(12) NOT NULL,
+    CCCD VARCHAR(15) NOT NULL UNIQUE,
+    account_id INT,
+    FOREIGN KEY (account_id) REFERENCES Account(id)
+);
+
+CREATE TABLE Status (
+    id INT PRIMARY KEY,
+    name VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE Notifications (
+    id INT PRIMARY KEY,
+    profile_id INT NOT NULL,
+    content VARCHAR(200) NOT NULL,
+    status_id INT NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
+    FOREIGN KEY (profile_id) REFERENCES Profile(id),
+    FOREIGN KEY (status_id) REFERENCES Status(id)
+);
+
+CREATE TABLE Category (
+    id INT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE Product (
+    id INT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    description VARCHAR(200) NOT NULL,
+    image VARCHAR(500) NOT NULL,
+    price INT NOT NULL,
+    category_id INT NOT NULL,
+    FOREIGN KEY (category_id) REFERENCES Category(id)
+);
+
+CREATE TABLE RestaurantTable (
+    id INT PRIMARY KEY,
+    ORstring VARCHAR(200) NOT NULL,
+    name VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE Customer (
+    id INT PRIMARY KEY,
+    name VARCHAR(10) NOT NULL,
+    phoneNumber VARCHAR(12) NOT NULL
+);
+
+CREATE TABLE `Order` (
+    id INT PRIMARY KEY,
+    user_id INT NOT NULL,
+    table_id INT NOT NULL,
+    status_id INT NOT NULL,
+    total_amount INT NOT NULL,
+    created_at DATETIME NOT NULL,
+    FOREIGN KEY (status_id) REFERENCES Status(id),
+    FOREIGN KEY (user_id) REFERENCES Customer(id),
+    FOREIGN KEY (table_id) REFERENCES RestaurantTable(id)
+);
+
+CREATE TABLE OrderDetail (
+    id INT PRIMARY KEY,
+    item_name VARCHAR(30) NOT NULL,
+    quantity INT NOT NULL,
+    price INT NOT NULL,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    status_id INT NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES `Order`(id),
+    FOREIGN KEY (product_id) REFERENCES Product(id),
+    FOREIGN KEY (status_id) REFERENCES Status(id)
+);
+
+CREATE TABLE TableStatus (
+    id INT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE TableDetail (
+    id INT PRIMARY KEY,
+    table_id INT NOT NULL,
+    table_status_id INT NOT NULL,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME NOT NULL,
+    customer_id INT NOT NULL,
+    note VARCHAR(200),
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
+    FOREIGN KEY (table_id) REFERENCES RestaurantTable(id),
+    FOREIGN KEY (table_status_id) REFERENCES TableStatus(id),
+    FOREIGN KEY (customer_id) REFERENCES Customer(id)
+);
+
+CREATE TABLE Payment (
+    id INT PRIMARY KEY,
+    order_id INT NOT NULL,
+    customer_id INT NOT NULL,
+    amount INT NOT NULL,
+    payment_method VARCHAR(200) NOT NULL,
+    status_id INT NOT NULL,
+    created_at DATETIME NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES `Order`(id),
+    FOREIGN KEY (customer_id) REFERENCES Customer(id),
+    FOREIGN KEY (status_id) REFERENCES Status(id)
+);
