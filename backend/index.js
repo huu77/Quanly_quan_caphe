@@ -13,7 +13,7 @@ require('./src/config/index')
 app.use(cors());
 app.use(compression());
 app.use(morgan('combined'));
-
+app.use(express.json());
 app.use('/api/v1',routers)
 
 app.listen(port, () => {
