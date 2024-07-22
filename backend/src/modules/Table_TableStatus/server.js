@@ -47,11 +47,11 @@ const createTableStatus = async (name) => {
 };
 
 const updateTableStatus = async (id, name) => {
-    if (!id || typeof id !== "number") {
-        return ResponseStatus.createResponse(400, {
-            message: "Invalid id provided.",
-        });
-    }
+    // if (!id || typeof id !== "number") {
+    //     return ResponseStatus.createResponse(400, {
+    //         message: "Invalid id provided.",
+    //     });
+    // }
     if (!name || typeof name !== "string" || !name.trim()) {
         return ResponseStatus.createResponse(400, {
             message: "Invalid name provided.",
@@ -66,11 +66,11 @@ const updateTableStatus = async (id, name) => {
 };
 
 const deleteTableStatus = async (id) => {
-    if (!id || typeof id !== "number") {
-        return ResponseStatus.createResponse(400, {
-            message: "Invalid id provided.",
-        });
-    }
+    // if (!id || typeof id !== "number") {
+    //     return ResponseStatus.createResponse(400, {
+    //         message: "Invalid id provided.",
+    //     });
+    // }
     try {
         const [result]= await pool.execute("DELETE FROM TableStatus WHERE id = ?", [id]);
         return ResponseStatus.createResponse(200, result);
