@@ -13,7 +13,7 @@ const getMuiltiTable=async (req, res) => {
 };
 
 const createTable=async (req, res) => {
-    const {name} =req.body
+    const {name,} =req.body
     const rs = await server.createTableServer(name);
     return res.status(200).json(rs);
 };
