@@ -1,8 +1,9 @@
 const db = require("../../config/ConnectDatabase");
 const ResponseStatus = require("../../ReponseStatus");
 const pool = db.getPool();
-const getRoleServer = async (id) => {
-  const sql = "SELECT * FROM Role WHERE id = ?";
+const { parseISO, isValid } = require('date-fns');
+const getSessionServer = async (id) => {
+  const sql = "SELECT * FROM Sessions WHERE id = ?";
 
   try {
     // Sử dụng pool.query từ mysql2/promise
@@ -20,8 +21,8 @@ const getRoleServer = async (id) => {
     return ResponseStatus.createResponse(500, error.message);
   }
 };
-const getMuiltiRoleServer = async () => {
-  const sql = "SELECT * FROM Role";
+const getMuiltiSessionServer = async () => {
+  const sql = "SELECT * FROM Sessions";
   try {
     // Sử dụng pool.query từ mysql2/promise
     const [results] = await pool.query(sql);
@@ -40,22 +41,18 @@ const getMuiltiRoleServer = async () => {
   }
 };
 
-const createRoleServer = async (name) => {
-  if (!name || typeof name !== "string" || !name.trim()) {
-    return ResponseStatus.createResponse(400, {
-      message: "Invalid name provided.",
-    });
-  }
-  const sql = "INSERT INTO Role (name) VALUES (?)";
+const createSessionServer = async (start_time,end_time) => {
+ 
+  const sql = "INSERT INTO Sessions (start_time,end_time) VALUES (?,?)";
 
   try {
     // Sử dụng pool.query từ mysql2/promise
-    const [result] = await pool.query(sql, [name]);
+    const [result] = await pool.query(sql, [start_time,end_time]);
 
     // Kiểm tra số lượng bản ghi bị ảnh hưởng
     if (result.affectedRows === 0) {
       return ResponseStatus.createResponse(500, {
-        message: "Failed to create Role.",
+        message: "Failed to create Sessions.",
       }); // Có lỗi khi thêm bản ghi
     }
 
@@ -67,26 +64,29 @@ const createRoleServer = async (name) => {
     return ResponseStatus.createResponse(500, error.message);
   }
 };
-const UpdateRoleServer = async ({ id, name }) => {
-  if (!name || typeof name !== "string" || !name.trim()) {
+const UpdateSessionServer = async ({ id, start_time,end_time }) => {
+  const startTimeParsed = parseISO(start_time);
+  const endTimeParsed = parseISO(end_time);
+
+  if (!isValid(startTimeParsed) || !isValid(endTimeParsed)) {
     return ResponseStatus.createResponse(400, {
-      message: "Invalid name provided.",
+      message: "Invalid datetime format for start_time or end_time.",
     });
   }
 
-  const sql = "UPDATE Role SET name = ? WHERE id = ?";
+  const sql = "UPDATE Sessions SET start_time = ?, end_time = ? WHERE id = ?";
 
   try {
     // Sử dụng pool.query từ mysql2/promise
-    const [result] = await pool.query(sql, [name, id]);
+    const [result] = await pool.query(sql, [start_time, end_time, id]);
 
     // Kiểm tra số lượng bản ghi bị ảnh hưởng
     if (result.affectedRows === 0) {
-      return ResponseStatus.createResponse(404, { message: "Role not found." }); // Không tìm thấy bản ghi để cập nhật
+      return ResponseStatus.createResponse(404, { message: "Session not found." });
     }
 
     // Trả về kết quả thành công với mã trạng thái 200 (OK)
-    return ResponseStatus.createResponse(200, { id, name });
+    return ResponseStatus.createResponse(200, { id, start_time, end_time });
   } catch (error) {
     // Xử lý lỗi với mã trạng thái 500
     console.error("Database query error:", error); // Ghi lại lỗi để kiểm tra
@@ -97,16 +97,17 @@ const UpdateRoleServer = async ({ id, name }) => {
   }
 };
 
-const deleteRoleServer = async (id) => {
-  const selectSql = "SELECT * FROM Role WHERE id = ?";
-  const deleteSql = "DELETE FROM Role WHERE id = ?";
+const deleteSessionServer = async (id) => {
+  const selectSql = "SELECT * FROM Sessions WHERE id = ?";
+  const deleteSql = "DELETE FROM Sessions WHERE id = ?";
+  
   try {
     // Kiểm tra xem bản ghi có tồn tại hay không
     const [results] = await pool.query(selectSql, [id]);
 
     if (results.length === 0) {
       // Nếu không có bản ghi, trả về 404
-      return ResponseStatus.createResponse(404, { message: "Role not found." });
+      return ResponseStatus.createResponse(404, { message: "Session not found." });
     }
 
     // Xóa bản ghi
@@ -116,24 +117,28 @@ const deleteRoleServer = async (id) => {
     if (deleteResult.affectedRows === 0) {
       // Nếu không có bản ghi bị xóa, trả về lỗi 500
       return ResponseStatus.createResponse(500, {
-        message: "Failed to delete Role.",
+        message: "Failed to delete session.",
       });
     }
 
     // Trả về kết quả thành công với mã trạng thái 200 (OK)
     return ResponseStatus.createResponse(200, {
-      message: "Role deleted successfully.",
+      message: "Session deleted successfully.",
     });
   } catch (error) {
     // Xử lý lỗi với mã trạng thái 500
     console.error("Database query error:", error); // Ghi lại lỗi để kiểm tra
-    return ResponseStatus.createResponse(500, error.message);
+    return ResponseStatus.createResponse(500, {
+      message: "Internal Server Error",
+      error: error.message,
+    });
   }
 };
+
 module.exports = {
-  getRoleServer,
-  getMuiltiRoleServer,
-  createRoleServer,
-  UpdateRoleServer,
-  deleteRoleServer,
+  getSessionServer,
+  getMuiltiSessionServer,
+  createSessionServer,
+  UpdateSessionServer,
+  deleteSessionServer,
 };

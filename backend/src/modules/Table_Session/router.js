@@ -5,9 +5,9 @@ const { validateNumber } = require('../../middleware/validates');
 const authenticateJWT = require('../../middleware/role');
 // add middleware  account
 // Define routes
-router.get('/oneRole/:id',authenticateJWT(['Manager']),validateNumber, controller.getRole);
-router.get('/muiltiRole',authenticateJWT(['Manager']), controller.getMuiltiRole);
-router.post('/createRole',authenticateJWT(['Manager']), controller.createRole);
-router.put('/updateRole',authenticateJWT(['Manager']), controller.updateRole);
-router.delete('/deleteRole/:id',authenticateJWT(['Manager']),validateNumber, controller.deleteRole);
+router.get('/oneSession/:id',authenticateJWT(['Manager']),validateNumber, controller.getSession);
+router.get('/muiltiSession',authenticateJWT(['Manager']), controller.getMuiltiSession);
+router.post('/createSession',authenticateJWT(['Manager']), controller.createSession);
+router.put('/updateSession',authenticateJWT(['Manager']), controller.updateSession);
+router.delete('/deleteSession/:id',authenticateJWT(['Manager']),validateNumber, controller.deleteSession);
 module.exports = router;
