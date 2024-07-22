@@ -86,6 +86,7 @@ CREATE TABLE `Order` (
     status_id INT NOT NULL,
     total_amount INT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    isDelete TINYINT(1) DEFAULT 1,
     FOREIGN KEY (status_id) REFERENCES Status(id),
     FOREIGN KEY (user_id) REFERENCES Customer(id),
     FOREIGN KEY (table_id) REFERENCES RestaurantTable(id)
