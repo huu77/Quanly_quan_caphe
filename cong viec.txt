@@ -1,4 +1,4 @@
 Hữu: Status
 
 
-Khánh: Account, profile, account, customer
+Khánh: Account, profile, account, customer, notifications
