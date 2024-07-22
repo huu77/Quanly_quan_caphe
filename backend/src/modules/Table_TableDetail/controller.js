@@ -17,7 +17,7 @@ const createTableDetail = async (req, res) => {
 }
 
 const updateTableDetail = async (req, res) => {
-    const response = await server.updateTableDetail(req.body.table_id, req.body.table_status_id, req.body.start_time, req.body.end_time, req.body.customer_id, req.body.note, req.body.id);
+    const response = await server.updateTableDetail(req.body.table_id, req.body.table_status_id, req.body.start_time, req.body.end_time, req.body.customer_id, req.body.note, req.params.id);
     res.status(200).json(response);
 }
 
