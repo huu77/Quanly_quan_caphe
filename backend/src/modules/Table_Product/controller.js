@@ -14,16 +14,8 @@ const getMuiltiProduct =async (req, res) => {
 };
 
 const createProduct =async (req, res) => {
-  const { name, description, price, category_id } = req.body;
-  const file = req.file;
-  // Kiểm tra xem tệp có được tải lên không
-  if (!file) {
-    return res.status(200).json(ResponseStatus.createResponse(400, { message: 'No file uploaded!' }));
-  }
-
-  // Lấy URL hình ảnh từ Cloudinary
-  const imageUrl = file.path;
-  const rs = await server.createProductServer(name, description, price, category_id,imageUrl);
+  const { name, description, price,image, category_id } = req.body;
+  const rs = await server.createProductServer(name, description, price,image, category_id);
     return res.status(200).json(rs);
 };
 const updateProduct =async (req, res) => {

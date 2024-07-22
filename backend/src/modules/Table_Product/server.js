@@ -1,7 +1,7 @@
-  
 const db = require("../../config/ConnectDatabase");
 const ResponseStatus = require("../../ReponseStatus");
 const pool = db.getPool();
+const cloudinary = require("../../config/Cloudinary");
 const getProductServer = async (id) => {
   const sql = "SELECT * FROM Product WHERE id = ?";
 
@@ -41,28 +41,62 @@ const getMuiltiProductServer = async () => {
   }
 };
 
-const createProductServer = async (name, description, price, category_id,imageUrl) => {
-  const sql = "INSERT INTO Product (name, description, image, price, category_id) VALUES (?, ?, ?, ?, ?)";
-
+const createProductServer = async (
+  name,
+  description,
+  price,
+  image,
+  category_id
+) => {
   try {
-    const [result] = await pool.query(sql, [name, description, imageUrl, price, category_id]);
-
-    if (result.affectedRows === 0) {
-      return res.status(500).json(ResponseStatus.createResponse(500, { message: 'Failed to create product.' }));
+    const sql =
+      "INSERT INTO Product (name, description, image, price, category_id) VALUES (?, ?, ?, ?, ?)";
+    if (image) {
+      const updateRes = await cloudinary.uploader.upload(image, {
+        upload_preset: "upload_image", // Đảm bảo upload preset tồn tại
+      });
+      if (updateRes) {
+        const [result] = await pool.query(sql, [
+          name,
+          description,
+          updateRes.secure_url,
+          price,
+          category_id,
+        ]);
+        if (result.affectedRows === 0) {
+          return ResponseStatus.createResponse(500, {
+            message: "Failed to create product.",
+          });
+        }
+        return ResponseStatus.createResponse(201, {
+          name,
+          description,
+          image: updateRes.secure_url,
+          price,
+          category_id,
+        });
+      } else {
+        ResponseStatus.createResponse(400, {
+          message: "lỗi thiếu image",
+        });
+      }
     }
-
-    return res.status(201).json(ResponseStatus.createResponse(201, { id: result.insertId, name, image: imageUrl }));
   } catch (error) {
-    console.error('Database query error:', error);
-    return res.status(500).json(ResponseStatus.createResponse(500, { message: 'Internal Server Error', error: error.message }));
-  }
-};
-const UpdateProductServer = async ({ id, name }) => {
-  if (!name || typeof name !== "string" || !name.trim()) {
-    return ResponseStatus.createResponse(400, {
-      message: "Invalid name provided.",
+    return ResponseStatus.createResponse(500, {
+      message: "Internal Server Error",
+      error: error.message,
     });
   }
+};
+const UpdateProductServer = async ({
+  id,
+  name,
+  description,
+  price,
+  image,
+  category_id,
+}) => {
+   
 
   const sql = "UPDATE Product SET name = ? WHERE id = ?";
 
@@ -72,7 +106,9 @@ const UpdateProductServer = async ({ id, name }) => {
 
     // Kiểm tra số lượng bản ghi bị ảnh hưởng
     if (result.affectedRows === 0) {
-      return ResponseStatus.createResponse(404, { message: "Product not found." }); // Không tìm thấy bản ghi để cập nhật
+      return ResponseStatus.createResponse(404, {
+        message: "Product not found.",
+      }); // Không tìm thấy bản ghi để cập nhật
     }
 
     // Trả về kết quả thành công với mã trạng thái 200 (OK)
@@ -96,7 +132,9 @@ const deleteProductServer = async (id) => {
 
     if (results.length === 0) {
       // Nếu không có bản ghi, trả về 404
-      return ResponseStatus.createResponse(404, { message: "Product not found." });
+      return ResponseStatus.createResponse(404, {
+        message: "Product not found.",
+      });
     }
 
     // Xóa bản ghi

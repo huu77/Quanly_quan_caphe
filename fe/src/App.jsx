@@ -19,35 +19,41 @@ function App() {
   };
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const file = e.target.files[0]
+    tranformfile(file)
   };
-
+const tranformfile =(file)=>{
+  const reader = new FileReader()
+  if(file){
+    reader.readAsDataURL(file)
+    reader.onload=()=>{
+      setFile(reader.result);
+    }
+  }
+  else{
+    setFile("")
+  }
+}
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Tạo FormData
+  
     const data = new FormData();
-    Object.keys(formData).forEach(key => {
-      data.append(key, formData[key]);
-    });
-  
-    // Thêm tệp vào FormData
-    if (file) {
-      data.append("file", file);
+    data.append('name', formData.name);
+    data.append('price', formData.price);
+    data.append('description', formData.description);
+    data.append('category_id', formData.category_id);
+    data.append('image',file)
+    try {
+      // Gửi dữ liệu lên server
+      const response = await axios.post("http://localhost:3333/api/v1/createProduct", data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log("Product created:", response);
+    } catch (error) {
+      console.error("Error creating product:", error);
     }
-  
-console.log(data)
-    // try {
-    //   // Gửi dữ liệu lên server
-    //   const response = await axios.post("http://localhost:3333/api/v1/createProduct", data, {
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //     },
-    //   });
-    //   console.log("Product created:", response.data);
-    // } catch (error) {
-    //   console.error("Error creating product:", error);
-    // }
   };
  
   return (
@@ -92,6 +98,7 @@ console.log(data)
           accept="image/*"
           required
         />
+        <img src={file} alt="" />
         <button type="submit">Submit</button>
       </form>
     </>
