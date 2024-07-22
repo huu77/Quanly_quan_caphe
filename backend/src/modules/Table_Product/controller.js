@@ -1,6 +1,7 @@
 
-const server = require("./server");
 
+const server = require("./server");
+ 
 const getProduct = async (req, res) => {
 
   const rs = await server.getProductServer(req.params.id);
@@ -13,7 +14,16 @@ const getMuiltiProduct =async (req, res) => {
 };
 
 const createProduct =async (req, res) => {
-    const rs = await server.createProductServer(req.body);
+  const { name, description, price, category_id } = req.body;
+  const file = req.file;
+  // Kiểm tra xem tệp có được tải lên không
+  if (!file) {
+    return res.status(200).json(ResponseStatus.createResponse(400, { message: 'No file uploaded!' }));
+  }
+
+  // Lấy URL hình ảnh từ Cloudinary
+  const imageUrl = file.path;
+  const rs = await server.createProductServer(name, description, price, category_id,imageUrl);
     return res.status(200).json(rs);
 };
 const updateProduct =async (req, res) => {

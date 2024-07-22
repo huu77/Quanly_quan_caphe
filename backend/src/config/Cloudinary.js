@@ -18,6 +18,6 @@ const storage = new CloudinaryStorage({
 });
 
 
-const Cloudinary = multer({ storage });
+const uploadCloud = multer({ storage });
 
-module.exports = Cloudinary;
+module.exports = uploadCloud

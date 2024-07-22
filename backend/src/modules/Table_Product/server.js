@@ -1,3 +1,4 @@
+  
 const db = require("../../config/ConnectDatabase");
 const ResponseStatus = require("../../ReponseStatus");
 const pool = db.getPool();
@@ -40,27 +41,20 @@ const getMuiltiProductServer = async () => {
   }
 };
 
-const createProductServer = async ({name,description,image,price,category_id}) => {
-
-  const sql = "INSERT INTO Product (name) VALUES (?)";
+const createProductServer = async (name, description, price, category_id,imageUrl) => {
+  const sql = "INSERT INTO Product (name, description, image, price, category_id) VALUES (?, ?, ?, ?, ?)";
 
   try {
-    // Sử dụng pool.query từ mysql2/promise
-    const [result] = await pool.query(sql, [name]);
+    const [result] = await pool.query(sql, [name, description, imageUrl, price, category_id]);
 
-    // Kiểm tra số lượng bản ghi bị ảnh hưởng
     if (result.affectedRows === 0) {
-      return ResponseStatus.createResponse(500, {
-        message: "Failed to create Product.",
-      }); // Có lỗi khi thêm bản ghi
+      return res.status(500).json(ResponseStatus.createResponse(500, { message: 'Failed to create product.' }));
     }
 
-    // Trả về kết quả thành công với mã trạng thái 201 (Created)
-    return ResponseStatus.createResponse(201, { id: result.insertId, name });
+    return res.status(201).json(ResponseStatus.createResponse(201, { id: result.insertId, name, image: imageUrl }));
   } catch (error) {
-    // Xử lý lỗi với mã trạng thái 500
-    console.error("Database query error:", error); // Ghi lại lỗi để kiểm tra
-    return ResponseStatus.createResponse(500, error.message);
+    console.error('Database query error:', error);
+    return res.status(500).json(ResponseStatus.createResponse(500, { message: 'Internal Server Error', error: error.message }));
   }
 };
 const UpdateProductServer = async ({ id, name }) => {
