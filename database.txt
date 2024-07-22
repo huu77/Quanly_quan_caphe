@@ -7,8 +7,9 @@ CREATE TABLE Role (
 CREATE TABLE Account (
     id INT AUTO_INCREMENT  PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL,
+    password VARCHAR(200) NOT NULL,
     role_id INT,
+    isActive TINYINT(1) DEFAULT 1,
     FOREIGN KEY (role_id) REFERENCES Role(id)
 );
 
@@ -22,7 +23,19 @@ CREATE TABLE Profile (
     account_id INT,
     FOREIGN KEY (account_id) REFERENCES Account(id)
 );
-
+CREATE TABLE Sessions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME NULL,
+);
+CREATE TABLE DetailSessions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT NOT NULL,
+    account_id INT,
+    isActive TINYINT(1) DEFAULT 1,
+    FOREIGN KEY (account_id) REFERENCES Account(id),
+    FOREIGN KEY (session_id) REFERENCES Sessions(id)
+);
 CREATE TABLE Status (
     id INT AUTO_INCREMENT  PRIMARY KEY,
     name VARCHAR(20) NOT NULL
@@ -30,12 +43,12 @@ CREATE TABLE Status (
 
 CREATE TABLE Notifications (
     id INT AUTO_INCREMENT  PRIMARY KEY,
-    profile_id INT NOT NULL,
+    receiver_id INT NOT NULL,
     content VARCHAR(200) NOT NULL,
     status_id INT NOT NULL,
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL,
-    FOREIGN KEY (profile_id) REFERENCES Profile(id),
+    FOREIGN KEY (receiver_id) REFERENCES Profile(id),
     FOREIGN KEY (status_id) REFERENCES Status(id)
 );
 
