@@ -13,8 +13,7 @@ const getMuiltiDetailsSession =async (req, res) => {
 };
 
 const createDetailsSession =async (req, res) => {
-    const {start_time,end_time} =req.body
-    const rs = await server.createDetailsSessionServer(start_time,end_time);
+    const rs = await server.createDetailsSessionServer(req.body);
     return res.status(200).json(rs);
 };
 const updateDetailsSession =async (req, res) => {

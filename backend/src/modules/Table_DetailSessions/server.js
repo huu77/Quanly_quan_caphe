@@ -41,13 +41,12 @@ const getMuiltiDetailsSessionServer = async () => {
   }
 };
 
-const createDetailsSessionServer = async (start_time,end_time) => {
- 
-  const sql = "INSERT INTO DetailSessions (start_time,end_time) VALUES (?,?)";
+const createDetailsSessionServer = async ({session_id,account_id,isActive=1}) => {
 
+  const sql = "INSERT INTO DetailSessions (session_id,account_id,isActive) VALUES (?,?,?)";
   try {
     // Sử dụng pool.query từ mysql2/promise
-    const [result] = await pool.query(sql, [start_time,end_time]);
+    const [result] = await pool.query(sql, [session_id,account_id,isActive]);
 
     // Kiểm tra số lượng bản ghi bị ảnh hưởng
     if (result.affectedRows === 0) {
@@ -57,28 +56,21 @@ const createDetailsSessionServer = async (start_time,end_time) => {
     }
 
     // Trả về kết quả thành công với mã trạng thái 201 (Created)
-    return ResponseStatus.createResponse(201, { id: result.insertId, name });
+    return ResponseStatus.createResponse(201, { id: result.insertId,session_id,account_id,isActive });
   } catch (error) {
     // Xử lý lỗi với mã trạng thái 500
     console.error("Database query error:", error); // Ghi lại lỗi để kiểm tra
     return ResponseStatus.createResponse(500, error.message);
   }
 };
-const UpdateDetailsSessionServer = async ({ id, start_time,end_time }) => {
-  const startTimeParsed = parseISO(start_time);
-  const endTimeParsed = parseISO(end_time);
 
-  if (!isValid(startTimeParsed) || !isValid(endTimeParsed)) {
-    return ResponseStatus.createResponse(400, {
-      message: "Invalid datetime format for start_time or end_time.",
-    });
-  }
 
-  const sql = "UPDATE DetailSessions SET start_time = ?, end_time = ? WHERE id = ?";
+const UpdateDetailsSessionServer = async ({ id, session_id, account_id, isActive = 1 }) => {
+  const sql = "UPDATE DetailSessions SET session_id = ?, account_id = ?, isActive = ? WHERE id = ?";
 
   try {
-    // Sử dụng pool.query từ mysql2/promise
-    const [result] = await pool.query(sql, [start_time, end_time, id]);
+    // Sử dụng pool.query từ mysql2/promise để thực hiện truy vấn SQL
+    const [result] = await pool.query(sql, [session_id, account_id, isActive, id]);
 
     // Kiểm tra số lượng bản ghi bị ảnh hưởng
     if (result.affectedRows === 0) {
@@ -86,7 +78,7 @@ const UpdateDetailsSessionServer = async ({ id, start_time,end_time }) => {
     }
 
     // Trả về kết quả thành công với mã trạng thái 200 (OK)
-    return ResponseStatus.createResponse(200, { id, start_time, end_time });
+    return ResponseStatus.createResponse(200, { id, session_id, account_id, isActive });
   } catch (error) {
     // Xử lý lỗi với mã trạng thái 500
     console.error("Database query error:", error); // Ghi lại lỗi để kiểm tra
