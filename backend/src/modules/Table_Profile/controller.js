@@ -11,19 +11,19 @@ const getProfile = async (req, res) => {
 const createProfile = async (req, res) => {
     const { account_id, firstname, lastname, phone, address, cccd } = req.body;
     const result = await server.createProfileServer(account_id, firstname, lastname, phone, address, cccd);
-    return res.status(200).json(result.data);
+    return res.status(200).json(result);
 };
 
 const updateProfile = async (req, res) => {
     const {account_id, firstname, lastname, phone, address, cccd } = req.body;
     const result = await server.updateProfileServer(account_id, firstname, lastname, phone, address, cccd);
-    return res.status(200).json(result.data);
+    return res.status(200).json(result);
 }
 
 const deleteProfile = async (req, res) => { 
     const { id } = req.params;
     const result = await server.deleteProfileServer(id);
-    return res.status(200).json(result.data);
+    return res.status(200).json(result);
 };
 
 module.exports = {
