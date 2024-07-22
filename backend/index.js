@@ -8,12 +8,17 @@ const port = process.env.PORT || 3333;
 const compression = require('compression');
 const cors = require('cors');
 const morgan = require('morgan');
+const bodyParser = require('body-parser');
 const routers = require('./src/modules/router')
 require('./src/config/index')
 app.use(cors());
 app.use(compression());
 app.use(morgan('combined'));
-app.use(express.json());
+// Sử dụng body-parser để phân tích cú pháp application/json
+app.use(bodyParser.json({ limit: '50mb' }));
+
+// Sử dụng body-parser để phân tích cú pháp application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/v1',routers)
 
 app.listen(port, () => {
