@@ -21,8 +21,8 @@ const createPayment = async (req, res) => {
 }
 
 const updatePayment = async (req, res) => {
-    const { order_id, customer_id, amount, payment_method, status_id, created_at, id } = req.body;
-    const result = await server.updatePayment(order_id, customer_id, amount, payment_method, status_id, created_at, id);
+    const { order_id, customer_id, amount, payment_method, status_id, created_at } = req.body;
+    const result = await server.updatePayment(order_id, customer_id, amount, payment_method, status_id, created_at, req.params.id);
     return res.status(200).json(result);
 }
 
