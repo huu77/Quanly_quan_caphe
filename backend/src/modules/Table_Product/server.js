@@ -96,13 +96,48 @@ const UpdateProductServer = async ({
   image,
   category_id,
 }) => {
-   
-
-  const sql = "UPDATE Product SET name = ? WHERE id = ?";
-
   try {
+    let updateImageResult;
+
+    // Lấy URL hình ảnh cũ từ cơ sở dữ liệu
+    const [rows] = await pool.query("SELECT image FROM Product WHERE id = ?", [id]);
+    const oldImageUrl = rows.length ? rows[0].image : null;
+
+    if (image) {
+      // Tải ảnh mới lên Cloudinary nếu có
+      updateImageResult = await cloudinary.uploader.upload(image, {
+        upload_preset: "upload_image",
+      });
+
+      // Xóa ảnh cũ khỏi Cloudinary nếu có
+      if (oldImageUrl) {
+        const publicId = oldImageUrl.split('/').pop().split('.')[0]; // Lấy public_id từ URL
+        await cloudinary.uploader.destroy(publicId, (error, result) => {
+          if (error) console.error("Error deleting old image:", error);
+          else console.log("Old image deleted:", result);
+        });
+      }
+    }
+
+    // Xây dựng câu truy vấn SQL
+    const sql = `
+      UPDATE Product
+      SET name = ?, description = ?, price = ?, ${image ? "image = ?, " : ""} category_id = ?
+      WHERE id = ?
+    `;
+
+    // Tạo mảng các giá trị cập nhật
+    const values = [
+      name,
+      description,
+      price,
+      ...(image ? [updateImageResult.secure_url] : []),
+      category_id,
+      id,
+    ];
+
     // Sử dụng pool.query từ mysql2/promise
-    const [result] = await pool.query(sql, [name, id]);
+    const [result] = await pool.query(sql, values);
 
     // Kiểm tra số lượng bản ghi bị ảnh hưởng
     if (result.affectedRows === 0) {
@@ -111,11 +146,16 @@ const UpdateProductServer = async ({
       }); // Không tìm thấy bản ghi để cập nhật
     }
 
-    // Trả về kết quả thành công với mã trạng thái 200 (OK)
-    return ResponseStatus.createResponse(200, { id, name });
+    return ResponseStatus.createResponse(200, {
+      id,
+      name,
+      description,
+      price,
+      image: image ? updateImageResult.secure_url : oldImageUrl,
+      category_id,
+    });
   } catch (error) {
-    // Xử lý lỗi với mã trạng thái 500
-    console.error("Database query error:", error); // Ghi lại lỗi để kiểm tra
+
     return ResponseStatus.createResponse(500, {
       message: "Internal Server Error",
       error: error.message,
