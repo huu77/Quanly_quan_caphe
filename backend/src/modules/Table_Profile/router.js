@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const controller = require('./controller');
 const { validateNumber } = require('../../middleware/validates');
+const authenticateJWT = require('../../middleware/role');
 
-router.get('/OneProfile/:id', validateNumber, controller.getProfile);
-router.post('/createProfile', controller.createProfile);
-router.put('/updateProfile', controller.updateProfile);
-router.delete('/deleteProfile/:id', controller.deleteProfile);
+router.get('/OneProfile/:id',authenticateJWT(['Manager','Start','Counter Staff']), validateNumber, controller.getProfile);
+router.post('/createProfile',authenticateJWT(['Manager']), controller.createProfile);
+router.put('/updateProfile', authenticateJWT(['Manager']),controller.updateProfile);
+router.delete('/deleteProfile/:id',authenticateJWT(['Manager']), controller.deleteProfile);
 
 module.exports = router;
