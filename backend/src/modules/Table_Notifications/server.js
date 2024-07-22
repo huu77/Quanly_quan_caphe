@@ -61,11 +61,7 @@ const createNotificationsServer = async (receiver_id, content, status_id, create
             message: "Invalid status_id provided.",
         });
     }
-    if (!created_at || typeof created_at !== "string" || !created_at.trim()) {
-        return ResponseStatus.createResponse(400, {
-            message: "Invalid created_at provided.",
-        });
-    }
+  
     if (!updated_at || typeof updated_at !== "string" || !updated_at.trim()) {
         return ResponseStatus.createResponse(400, {
             message: "Invalid updated_at provided.",
