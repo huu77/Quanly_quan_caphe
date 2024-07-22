@@ -1,9 +1,9 @@
 const db = require("../../config/ConnectDatabase");
 const ResponseStatus = require("../../ReponseStatus");
 const pool = db.getPool();
-const { format, parseISO, isValid } = require('date-fns');
-const getSessionServer = async (id) => {
-  const sql = "SELECT * FROM Sessions WHERE id = ?";
+const { parseISO, isValid } = require('date-fns');
+const getDetailsSessionServer = async (id) => {
+  const sql = "SELECT * FROM DetailSessions WHERE id = ?";
 
   try {
     // Sử dụng pool.query từ mysql2/promise
@@ -21,8 +21,8 @@ const getSessionServer = async (id) => {
     return ResponseStatus.createResponse(500, error.message);
   }
 };
-const getMuiltiSessionServer = async () => {
-  const sql = "SELECT * FROM Sessions";
+const getMuiltiDetailsSessionServer = async () => {
+  const sql = "SELECT * FROM DetailSessions";
   try {
     // Sử dụng pool.query từ mysql2/promise
     const [results] = await pool.query(sql);
@@ -41,62 +41,52 @@ const getMuiltiSessionServer = async () => {
   }
 };
 
-const createSessionServer = async (start_time,end_time) => {
-  const startTimeParsed = parseISO(start_time);
-  const endTimeParsed = parseISO(end_time);
-  const sql = "INSERT INTO Sessions (start_time,end_time) VALUES (?,?)";
+const createDetailsSessionServer = async (start_time,end_time) => {
+ 
+  const sql = "INSERT INTO DetailSessions (start_time,end_time) VALUES (?,?)";
 
   try {
     // Sử dụng pool.query từ mysql2/promise
-    const [result] = await pool.query(sql, [startTimeParsed,endTimeParsed]);
+    const [result] = await pool.query(sql, [start_time,end_time]);
 
     // Kiểm tra số lượng bản ghi bị ảnh hưởng
     if (result.affectedRows === 0) {
       return ResponseStatus.createResponse(500, {
-        message: "Failed to create Sessions.",
+        message: "Failed to create DetailSessions.",
       }); // Có lỗi khi thêm bản ghi
     }
 
     // Trả về kết quả thành công với mã trạng thái 201 (Created)
-    return ResponseStatus.createResponse(201, { id: result.insertId ,startTimeParsed,endTimeParsed});
+    return ResponseStatus.createResponse(201, { id: result.insertId, name });
   } catch (error) {
     // Xử lý lỗi với mã trạng thái 500
     console.error("Database query error:", error); // Ghi lại lỗi để kiểm tra
     return ResponseStatus.createResponse(500, error.message);
   }
 };
-
-const convertToMySQLDatetime = (isoString) => {
-  const date = parseISO(isoString);
-  return format(date, 'yyyy-MM-dd HH:mm:ss');
-};
-const UpdateSessionServer = async ({ id, start_time, end_time }) => {
+const UpdateDetailsSessionServer = async ({ id, start_time,end_time }) => {
   const startTimeParsed = parseISO(start_time);
   const endTimeParsed = parseISO(end_time);
 
-  // Kiểm tra định dạng datetime
   if (!isValid(startTimeParsed) || !isValid(endTimeParsed)) {
     return ResponseStatus.createResponse(400, {
       message: "Invalid datetime format for start_time or end_time.",
     });
   }
 
-  // Chuyển đổi định dạng datetime từ ISO 8601 sang MySQL DATETIME
-  const startTimeMySQL = convertToMySQLDatetime(start_time);
-  const endTimeMySQL = convertToMySQLDatetime(end_time);
-
-  const sql = "UPDATE Sessions SET start_time = ?, end_time = ? WHERE id = ?";
+  const sql = "UPDATE DetailSessions SET start_time = ?, end_time = ? WHERE id = ?";
 
   try {
-    const [result] = await pool.query(sql, [startTimeMySQL, endTimeMySQL, id]);
+    // Sử dụng pool.query từ mysql2/promise
+    const [result] = await pool.query(sql, [start_time, end_time, id]);
 
     // Kiểm tra số lượng bản ghi bị ảnh hưởng
     if (result.affectedRows === 0) {
-      return ResponseStatus.createResponse(404, { message: "Session not found." });
+      return ResponseStatus.createResponse(404, { message: "DetailSessions not found." });
     }
 
     // Trả về kết quả thành công với mã trạng thái 200 (OK)
-    return ResponseStatus.createResponse(200, { id, start_time: startTimeMySQL, end_time: endTimeMySQL });
+    return ResponseStatus.createResponse(200, { id, start_time, end_time });
   } catch (error) {
     // Xử lý lỗi với mã trạng thái 500
     console.error("Database query error:", error); // Ghi lại lỗi để kiểm tra
@@ -105,11 +95,11 @@ const UpdateSessionServer = async ({ id, start_time, end_time }) => {
       error: error.message,
     });
   }
-};;
+};
 
-const deleteSessionServer = async (id) => {
-  const selectSql = "SELECT * FROM Sessions WHERE id = ?";
-  const deleteSql = "DELETE FROM Sessions WHERE id = ?";
+const deleteDetailsSessionServer = async (id) => {
+  const selectSql = "SELECT * FROM DetailSessions WHERE id = ?";
+  const deleteSql = "DELETE FROM DetailSessions WHERE id = ?";
   
   try {
     // Kiểm tra xem bản ghi có tồn tại hay không
@@ -117,7 +107,7 @@ const deleteSessionServer = async (id) => {
 
     if (results.length === 0) {
       // Nếu không có bản ghi, trả về 404
-      return ResponseStatus.createResponse(404, { message: "Session not found." });
+      return ResponseStatus.createResponse(404, { message: "DetailSessions not found." });
     }
 
     // Xóa bản ghi
@@ -127,13 +117,13 @@ const deleteSessionServer = async (id) => {
     if (deleteResult.affectedRows === 0) {
       // Nếu không có bản ghi bị xóa, trả về lỗi 500
       return ResponseStatus.createResponse(500, {
-        message: "Failed to delete session.",
+        message: "Failed to delete DetailSessions.",
       });
     }
 
     // Trả về kết quả thành công với mã trạng thái 200 (OK)
     return ResponseStatus.createResponse(200, {
-      message: "Session deleted successfully.",
+      message: "DetailSessions deleted successfully.",
     });
   } catch (error) {
     // Xử lý lỗi với mã trạng thái 500
@@ -146,9 +136,9 @@ const deleteSessionServer = async (id) => {
 };
 
 module.exports = {
-  getSessionServer,
-  getMuiltiSessionServer,
-  createSessionServer,
-  UpdateSessionServer,
-  deleteSessionServer,
+  getDetailsSessionServer,
+  getMuiltiDetailsSessionServer,
+  createDetailsSessionServer,
+  UpdateDetailsSessionServer,
+  deleteDetailsSessionServer,
 };
