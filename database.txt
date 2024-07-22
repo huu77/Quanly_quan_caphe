@@ -46,8 +46,8 @@ CREATE TABLE Notifications (
     receiver_id INT NOT NULL,
     content VARCHAR(200) NOT NULL,
     status_id INT NOT NULL,
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME  NULL,
     FOREIGN KEY (receiver_id) REFERENCES Profile(id),
     FOREIGN KEY (status_id) REFERENCES Status(id)
 );
@@ -85,7 +85,7 @@ CREATE TABLE `Order` (
     table_id INT NOT NULL,
     status_id INT NOT NULL,
     total_amount INT NOT NULL,
-    created_at DATETIME NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (status_id) REFERENCES Status(id),
     FOREIGN KEY (user_id) REFERENCES Customer(id),
     FOREIGN KEY (table_id) REFERENCES RestaurantTable(id)
@@ -117,8 +117,8 @@ CREATE TABLE TableDetail (
     end_time DATETIME NOT NULL,
     customer_id INT NOT NULL,
     note VARCHAR(200),
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at DATETIME NULL,
     FOREIGN KEY (table_id) REFERENCES RestaurantTable(id),
     FOREIGN KEY (table_status_id) REFERENCES TableStatus(id),
     FOREIGN KEY (customer_id) REFERENCES Customer(id)
@@ -131,7 +131,7 @@ CREATE TABLE Payment (
     amount INT NOT NULL,
     payment_method VARCHAR(200) NOT NULL,
     status_id INT NOT NULL,
-    created_at DATETIME NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (order_id) REFERENCES `Order`(id),
     FOREIGN KEY (customer_id) REFERENCES Customer(id),
     FOREIGN KEY (status_id) REFERENCES Status(id)
