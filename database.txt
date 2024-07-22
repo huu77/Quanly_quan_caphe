@@ -26,7 +26,7 @@ CREATE TABLE Profile (
 CREATE TABLE Sessions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     start_time DATETIME NOT NULL,
-    end_time DATETIME NULL,
+    end_time DATETIME NULL
 );
 CREATE TABLE DetailSessions (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -136,3 +136,27 @@ CREATE TABLE Payment (
     FOREIGN KEY (customer_id) REFERENCES Customer(id),
     FOREIGN KEY (status_id) REFERENCES Status(id)
 );
+
+
+INSERT INTO Role (name) VALUES ('Start');
+INSERT INTO Role (name) VALUES ('Counter Staff');
+INSERT INTO Role (name) VALUES ('Manager');
+
+INSERT INTO Status (name) VALUES ('Booked');
+INSERT INTO Status (name) VALUES ('Canceled');
+INSERT INTO Status (name) VALUES ('Completed');
+INSERT INTO Status (name) VALUES ('Received');
+INSERT INTO Status (name) VALUES ('In Progress');
+INSERT INTO Status (name) VALUES ('Pending');
+
+INSERT INTO TableStatus (name) VALUES ('Reserved');
+INSERT INTO TableStatus (name) VALUES ('Available');
+INSERT INTO TableStatus (name) VALUES ('Occupied');
+
+INSERT INTO RestaurantTable (name, ORstring) VALUES ('Table 1', '');
+INSERT INTO RestaurantTable (name, ORstring) VALUES ('Table 2', '');
+INSERT INTO RestaurantTable (name, ORstring) VALUES ('Table 3', '');
+ 
+INSERT INTO Category (name) VALUES ('Coffee');
+INSERT INTO Category (name) VALUES ('Milk Tea');
+INSERT INTO Category (name) VALUES ('Juice');
