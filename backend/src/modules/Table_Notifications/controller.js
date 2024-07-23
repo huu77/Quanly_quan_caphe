@@ -1,4 +1,4 @@
-const io = require("../../../index");
+const io = require('../../socket/index')
 const { validateNumber } = require("../../middleware/validates");
 const server = require("./server");
 
