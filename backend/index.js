@@ -4,11 +4,10 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3333;
 const http = require('http');  // Import http
-const socketIo = require('socket.io');  // Import socket.io
 
 // Create server
 const server = http.createServer(app);
-const io = socketIo(server);  // Attach socket.io to the server
+ 
 
 // Middleware 
 const compression = require('compression');
@@ -28,17 +27,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/api/v1',routers)
 
 
-// Listen for socket connections
-io.on('connection', (socket) => {
-  console.log('a user connected');
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
-
+require('./src/socket')(server);
 
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
-module.exports = io;
