@@ -45,7 +45,7 @@ const tranformfile =(file)=>{
     data.append('image',file)
     try {
       // Gửi dữ liệu lên server
-      const response = await axios.post("http://localhost:3333/api/v1/createProduct", data, {
+      const response = await axios.post("http://localhost:3000/api/v1/createProduct", data, {
         headers: {
           'Content-Type': 'application/json',
         },
