@@ -5,7 +5,7 @@ module.exports = (server) => {
 
   // Listen for socket connections
   io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log('a user connected',socket.id);
 
     socket.on('disconnect', () => {
       console.log('user disconnected');
