@@ -1,8 +1,8 @@
 
-// import ProvicesApi from "@apis/slice/provices";
+import Product from "@apis/slices/Product";
  
 const Reducer = {
-    // [ProvicesApi.reducerPath]: ProvicesApi.reducer,
+    [Product.reducerPath]: Product.reducer,
  
 }
 

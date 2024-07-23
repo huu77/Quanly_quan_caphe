@@ -1,10 +1,10 @@
 // middleware.js
 
-// import ProvicesApi from "@apis/slice/provices";
+import Product from "@apis/slices/Product";
  
 const middleware = (getDefaultMiddleware) =>
   getDefaultMiddleware()
-    // .concat(ProvicesApi.middleware)
+    .concat(Product.middleware)
     
 
 export default middleware;
