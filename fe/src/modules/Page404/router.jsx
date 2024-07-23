@@ -1,4 +1,4 @@
-import { lazy } from "react";
+
 import Page404 from "./index";
 
 const RouterPage404 = {
