@@ -1,7 +1,14 @@
-const socketIo = require('socket.io');  // Import socket.io
+const { Server } = require('socket.io');
+const { createAdapter, setupPrimary } = require('@socket.io/cluster-adapter');
+ 
 
 module.exports = (server) => {
-  const io = socketIo(server);  // Attach socket.io to the server
+  const io = new Server(server, {
+    connectionStateRecovery: {
+      maxDisconnectionDuration: 2 * 60 * 1000, // tối đa 2 phút
+    },
+
+  });
 
   // Listen for socket connections
   io.on('connection', (socket) => {
