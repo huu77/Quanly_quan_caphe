@@ -26,7 +26,8 @@ CREATE TABLE Profile (
 CREATE TABLE Sessions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     start_time DATETIME NOT NULL,
-    end_time DATETIME NULL
+    end_time DATETIME NULL,
+    typeSession VARCHAR(20) NOT NULL,
 );
 CREATE TABLE DetailSessions (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -70,7 +71,9 @@ CREATE TABLE Product (
 CREATE TABLE RestaurantTable (
     id INT AUTO_INCREMENT  PRIMARY KEY,
     ORstring VARCHAR(200) NOT NULL,
-    name VARCHAR(10) NOT NULL
+    name VARCHAR(10) NOT NULL,
+    status_table_id INT NOT NULL,
+    FOREIGN KEY (status_table_id) REFERENCES TableStatus(id)
 );
 
 CREATE TABLE Customer (

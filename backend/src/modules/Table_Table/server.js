@@ -40,18 +40,18 @@ const getMuiltiTableServer = async () => {
   }
 };
 
-const createTableServer = async (name, ORstring) => {
+const createTableServer = async (name, ORstring,status_table_id) => {
   if (!name || typeof name !== "string" || !name.trim()) {
     return ResponseStatus.createResponse(400, {
       message: "Invalid name provided.",
     });
   }
 
-  const sql = "INSERT INTO RestaurantTable (name, ORstring) VALUES (?, ?)"; // Thêm cả trường ORstring vào câu lệnh SQL
+  const sql = "INSERT INTO RestaurantTable (name, ORstring,status_table_id) VALUES (?, ?,?)"; // Thêm cả trường ORstring vào câu lệnh SQL
 
   try {
     // Sử dụng pool.query từ mysql2/promise
-    const [result] = await pool.query(sql, [name, ORstring]);
+    const [result] = await pool.query(sql, [name, ORstring,status_table_id]);
 
     // Kiểm tra số lượng bản ghi bị ảnh hưởng
     if (result.affectedRows === 0) {
@@ -73,18 +73,18 @@ const createTableServer = async (name, ORstring) => {
   }
 };
 
-const UpdateTableServer = async ({ id, name, ORstring }) => {
+const UpdateTableServer = async ({ id, name, ORstring,status_table_id }) => {
   if (!name || typeof name !== "string" || !name.trim()) {
     return ResponseStatus.createResponse(400, {
       message: "Invalid name provided.",
     });
   }
 
-  const sql = "UPDATE RestaurantTable SET name = ?, ORstring = ? WHERE id = ?";
+  const sql = "UPDATE RestaurantTable SET name = ?, ORstring = ? ,status_table_id =? WHERE id = ?";
 
   try {
     // Sử dụng pool.query từ mysql2/promise
-    const [result] = await pool.query(sql, [name, ORstring, id]);
+    const [result] = await pool.query(sql, [name, ORstring,status_table_id, id]);
 
     // Kiểm tra số lượng bản ghi bị ảnh hưởng
     if (result.affectedRows === 0) {
