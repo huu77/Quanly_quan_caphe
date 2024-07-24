@@ -33,7 +33,7 @@ axiosInstance.interceptors.response.use(
     // Kiểm tra lỗi có phải là 401 Unauthorized và nếu đây không phải là lần thử lại
     if (error.response && (error.response.status === 401) && !originalRequest._retry) {
       originalRequest._retry = true;
-      const refreshToken = localStorage.getItem("token"); // Đảm bảo bạn có token làm mới riêng
+      // const refreshToken = localStorage.getItem("token"); // Đảm bảo bạn có token làm mới riêng
     //   try {
     //       // localStorage.clear()
     //       // window.location.href = '/login';
