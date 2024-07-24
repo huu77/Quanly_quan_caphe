@@ -1,11 +1,27 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import Sidebar from './Sidebar'
 
+import {Outlet, useLocation} from 'react-router-dom'
 const index = () => {
+  const location = useLocation();
+  const [getNameRouter,setNameRouter] = useState('quán cà phê')
+  useEffect(() => {
+    if(location.pathname === '/staff'){
+      setNameRouter('nhân viên')
+    }else if(location.pathname ===  '/session'){
+      setNameRouter('phiên làm việc')
+    }
+ 
+    
+  }, [location]);
   return (
+    <>
+    <Sidebar/>
     <div className="navbar bg-base-100">
     <div className="navbar-start">
       <div className="dropdown">
-        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+
+        <label htmlFor="my-drawer" role="button" className="btn btn-ghost btn-circle">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
@@ -18,18 +34,12 @@ const index = () => {
               strokeWidth="2"
               d="M4 6h16M4 12h16M4 18h7" />
           </svg>
-        </div>
-        <ul
-          tabIndex={0}
-          className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-          <li><a>Homepage</a></li>
-          <li><a>Portfolio</a></li>
-          <li><a>About</a></li>
-        </ul>
+        </label>
+       
       </div>
     </div>
     <div className="navbar-center">
-      <a className="btn btn-ghost text-xl">daisyUI</a>
+      <a className="btn btn-ghost text-xl">Quản lý {getNameRouter}</a>
     </div>
     <div className="navbar-end">
       <button className="btn btn-ghost btn-circle">
@@ -65,6 +75,12 @@ const index = () => {
       </button>
     </div>
   </div>
+  <div className='flex justify-center items-start '>
+    <div className='w-[1360px] h-fit'>
+    <Outlet/>
+    </div>
+  </div>
+  </>
   )
 }
 

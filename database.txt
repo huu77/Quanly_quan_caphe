@@ -70,7 +70,9 @@ CREATE TABLE Product (
 CREATE TABLE RestaurantTable (
     id INT AUTO_INCREMENT  PRIMARY KEY,
     ORstring VARCHAR(200) NOT NULL,
-    name VARCHAR(10) NOT NULL
+    name VARCHAR(10) NOT NULL,
+    status_table_id INT NOT NULL,
+    FOREIGN KEY (status_table_id) REFERENCES TableStatus(id)
 );
 
 CREATE TABLE Customer (
