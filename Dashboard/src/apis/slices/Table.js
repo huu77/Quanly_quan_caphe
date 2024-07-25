@@ -5,6 +5,7 @@ const API_URL = import.meta.env.VITE_APP_URL;
 
 const TableApi = createApi({
   reducerPath: "TableApi",
+  tagTypes: ['Table'], 
   baseQuery: axiosBaseQuery({
     baseUrl: API_URL,
   }),
@@ -17,15 +18,25 @@ const TableApi = createApi({
         method: "POST",
         data: body,
       }),
+      invalidatesTags: ['Table'], 
     }),
     getAllTable: build.query({
       query: () => ({
         url: `/muiltiTable`,
         method: "GET",
       }),
+      providesTags: ['Table'],
+    }),
+    putUpdateTable: build.mutation({
+      query: (body) => ({
+        url: `/updateTable`,
+        method: "PUT",
+        data: body,
+      }),
+      invalidatesTags: ['Table'], 
     }),
   }),
 });
 
-export const { usePostTableMutation ,useGetAllTableQuery} = TableApi;
+export const { usePostTableMutation ,useGetAllTableQuery,usePutUpdateTableMutation } = TableApi;
 export default TableApi;
