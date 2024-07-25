@@ -22,7 +22,7 @@ const getAllProfileServer = async (isActive) => {
     FROM Account ac 
     INNER JOIN Profile pr ON ac.id = pr.account_id 
     WHERE ac.isActive = ?`;
-
+ 
   try {
     const [results] = await pool.query(sql, [isActive]);
 
