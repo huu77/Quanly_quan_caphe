@@ -1,6 +1,7 @@
 import React from "react";
 import Table from "./Table";
 import { toast } from "react-toastify";
+import { useGetAllProfileQuery } from "@apis/slices/Account";
 
 const numberIN = [
   {
@@ -44,6 +45,8 @@ const Tab1 = () => {
   const showModal = () => {
     document.getElementById("modalCreateNV").showModal();
   };
+  const {data} = useGetAllProfileQuery(1)
+  console.log(data)
 const hanldeClick =()=>{
     toast.success("Tạo thành công")
 }

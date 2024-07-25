@@ -23,6 +23,7 @@ const index = () => {
  
     
   }, [location]);
+  
   return (
     <>
     <Sidebar/>

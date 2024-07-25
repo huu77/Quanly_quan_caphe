@@ -17,6 +17,25 @@ const getProfileServer = async (id) => {
     return ResponseStatus.createResponse(500, error.message);
   }
 };
+const getAllProfileServer = async (isActive) => {
+
+  const sql = `SELECT ac.id, (pr.firstname + ' ' + pr.lastname) AS name, pr.address, pr.phoneNumber, pr.CCCD 
+    FROM Account ac 
+    INNER JOIN Profile pr ON ac.id = pr.account_id 
+    WHERE ac.isActive = ?`;
+
+  try {
+    const [results] = await pool.query(sql, [isActive]);
+
+    if (results && results.length === 0) {
+      return ResponseStatus.createResponse(404, null);
+    }
+
+    return ResponseStatus.createResponse(200, results[0]);
+  } catch (error) {
+    return ResponseStatus.createResponse(500, error.message);
+  }
+};
 
 const createProfileServer = async (
   account_id,
@@ -170,6 +189,7 @@ const deleteProfileServer = async (id) => {
 
 module.exports = {
   getProfileServer,
+  getAllProfileServer,
   createProfileServer,
   updateProfileServer,
   deleteProfileServer,
