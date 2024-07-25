@@ -144,7 +144,6 @@ const createAccountServer = async ({
     });
   }
 };
-
 const updateAccountServer = async (id, username, password, role_id) => {
   if (!username || typeof username !== "string" || !username.trim()) {
     return ResponseStatus.createResponse(400, {
