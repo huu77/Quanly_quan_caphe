@@ -10,7 +10,7 @@ function encode(user) {
       role_id: user.role_id 
     }, 
     process.env.JWT_SECRET, 
-    { expiresIn: '15m' } // Access token expires in 15 minutes
+    { expiresIn: '60m' } 
   );
 
   const refreshToken = jwt.sign(

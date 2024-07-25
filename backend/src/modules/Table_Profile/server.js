@@ -18,7 +18,7 @@ const getProfileServer = async (id) => {
   }
 };
 const getAllProfileServer = async (isActive) => {
-  const sql = `SELECT ac.id, (pr.firstname + ' ' + pr.lastname) AS name, pr.address, pr.phoneNumber, pr.CCCD 
+  const sql = `SELECT ac.id, pr.firstname ,pr.lastname, pr.address, pr.phoneNumber, pr.CCCD 
     FROM Account ac 
     INNER JOIN Profile pr ON ac.id = pr.account_id 
     WHERE ac.isActive = ?`;
