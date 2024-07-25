@@ -21,7 +21,7 @@ const getTableServer = async (id) => {
   }
 };
 const getMuiltiTableServer = async () => {
-  const sql = "SELECT * FROM RestaurantTable";
+  const sql = "SELECT rs.id,rs.ORstring, rs.name as nameTable ,ts.name FROM RestaurantTable rs INNER JOIN TableStatus ts on rs.status_table_id = ts.id  ";
   try {
     // Sử dụng pool.query từ mysql2/promise
     const [results] = await pool.query(sql);

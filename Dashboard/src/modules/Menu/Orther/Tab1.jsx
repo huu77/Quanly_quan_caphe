@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import { toast } from "react-toastify";
+import { useGetAllTableQuery, usePostTableMutation } from "../../../apis/slices/Table";
 const Tab1 = () => {
   // Dữ liệu mẫu cho các bàn
   const tableData = [
@@ -25,8 +26,21 @@ const Tab1 = () => {
     // Thêm các bàn khác nếu cần
   ];
   const [text, setText] = useState("");
-const handleClick =()=>{
-    toast.success("Tạo Thành Công!")
+  const [textQR,setTextQR] =  useState("");
+  const {data} = useGetAllTableQuery()
+  const [postTable] =usePostTableMutation()
+console.log(data)
+const handleClick =async()=>{
+  try {
+    const kq = await postTable({ name: text, ORstring: textQR }).unwrap
+    if(kq.statusCode ===201){
+      toast.success("Tạo Thành Công!")
+    }else{
+      toast.error("Tạo Không Thành Công!")
+    }
+  } catch (error) {
+    toast.error(error.message)
+  }
 }
   return (
     <div className="flex flex-col gap-10">
@@ -40,7 +54,7 @@ const handleClick =()=>{
       </div>
 
       <div className="grid grid-cols-3 gap-10">
-        {tableData.map((table) => (
+        {data?.data.map((table) => (
           <div
             key={table.id}
             className=" indicator card bg-base-100 w-96 shadow-xl"
@@ -50,12 +64,12 @@ const handleClick =()=>{
               <h2 className="card-title">{table.name}</h2>
               <p>
                 <span className="font-bold">Trạng thái hoạt động: </span>{" "}
-                {table.status}
+        
               </p>
             </div>
             <figure>
               <QRCodeCanvas
-                value={text}
+                value={table.ORstring}
                 size={256}
                 level={"H"}
                 includeMargin={true}
@@ -72,7 +86,7 @@ const handleClick =()=>{
           <div>
             <label className="input input-bordered flex items-center gap-2">
               Nhập tên bàn
-              <input type="text" className="grow" placeholder="" />
+              <input type="text" className="grow" placeholder="" value={text} onChange={(e)=>setText(e.target.value)}/>
             </label>
           </div>
           <div>
@@ -80,8 +94,8 @@ const handleClick =()=>{
               Tạo mã QR
               <input
                 type="text"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                value={textQR}
+                onChange={(e) => setTextQR(e.target.value)}
                 className="grow"
                 placeholder=""
               />
@@ -89,10 +103,11 @@ const handleClick =()=>{
           </div>
           <div>
             <QRCodeCanvas
-              value={text}
+              value={textQR}
               size={256}
               level={"H"}
               includeMargin={true}
+            
             />
           </div>
           <div className="modal-action">
