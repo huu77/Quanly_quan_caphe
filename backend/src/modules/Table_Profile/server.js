@@ -30,7 +30,7 @@ const getAllProfileServer = async (isActive) => {
       return ResponseStatus.createResponse(404, null);
     }
 
-    return ResponseStatus.createResponse(200, results[0]);
+    return ResponseStatus.createResponse(200, results);
   } catch (error) {
     return ResponseStatus.createResponse(500, error.message);
   }

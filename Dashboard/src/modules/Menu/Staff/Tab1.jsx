@@ -45,11 +45,11 @@ const Tab1 = () => {
   const showModal = () => {
     document.getElementById("modalCreateNV").showModal();
   };
-  const {data} = useGetAllProfileQuery(1)
-  console.log(data)
-const hanldeClick =()=>{
+  const { data } = useGetAllProfileQuery(1)
+  console.log("🚀 ~ Tab1 ~ data:", data)
+  const hanldeClick = () => {
     toast.success("Tạo thành công")
-}
+  }
   return (
     <div className="flex flex-col gap-5">
       <div>
@@ -68,9 +68,8 @@ const hanldeClick =()=>{
           <div className="grid grid-cols-2 gap-5">
             {numberIN.map((i) => (
               <label
-                className={`input input-bordered flex items-center gap-2 font-bold ${
-                  i.name === "address" ? "col-span-2" : ""
-                }`}
+                className={`input input-bordered flex items-center gap-2 font-bold ${i.name === "address" ? "col-span-2" : ""
+                  }`}
                 key={i.id}
               >
                 {i.title.toUpperCase()}
