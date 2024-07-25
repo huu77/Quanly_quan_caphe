@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   mysql_server:
     image: mysql:8.1.0
@@ -8,7 +9,7 @@ services:
       MYSQL_USER: your_mysql_user
       MYSQL_PASSWORD: your_mysql_password
     ports:
-      - 3306:3306
+      - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
