@@ -172,11 +172,15 @@ const loginAccountServer = async (username, password) => {
         message: "Invalid password.",
       });
     }
-
+    if (!user.isActive) {
+      return ResponseStatus.createResponse(401, {
+        message: "Tài khoản đã bị xóa.",
+      });
+    }
     // Tạo access token và refresh token
     const { accessToken, refreshToken } = encode(user);
-
-    return ResponseStatus.createResponse(200, { accessToken, refreshToken });
+ 
+    return ResponseStatus.createResponse(200, { accessToken, refreshToken,role:user.role_id });
   } catch (error) {
     return ResponseStatus.createResponse(500, error.message);
   }

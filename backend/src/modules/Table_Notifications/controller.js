@@ -1,4 +1,4 @@
-const io = require("../../../index");
+const io = require('../../socket/index')
 const { validateNumber } = require("../../middleware/validates");
 const server = require("./server");
 
@@ -17,7 +17,7 @@ const createNotifications = async (req, res) => {
     const { receiver_id, content, status_id, created_at, updated_at } = req.body;
     const result = await server.createNotificationsServer(receiver_id, content, status_id, created_at, updated_at);
     // Emit a socket event for the new notification
-    io.emit(`notification-${receiver_id}`, result);
+    io.emit(`notification-${receiver_id}`, result.json());
     return res.status(200).json(result);
 }
 

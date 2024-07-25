@@ -44,11 +44,11 @@ const getMuiltiSessionServer = async () => {
 const createSessionServer = async (start_time,end_time) => {
   const startTimeParsed = parseISO(start_time);
   const endTimeParsed = parseISO(end_time);
-  const sql = "INSERT INTO Sessions (start_time,end_time) VALUES (?,?)";
+  const sql = "INSERT INTO Sessions (start_time,end_time,typeSession) VALUES (?,?,?)";
 
   try {
     // Sử dụng pool.query từ mysql2/promise
-    const [result] = await pool.query(sql, [startTimeParsed,endTimeParsed]);
+    const [result] = await pool.query(sql, [startTimeParsed,endTimeParsed,typeSession]);
 
     // Kiểm tra số lượng bản ghi bị ảnh hưởng
     if (result.affectedRows === 0) {
@@ -70,7 +70,7 @@ const convertToMySQLDatetime = (isoString) => {
   const date = parseISO(isoString);
   return format(date, 'yyyy-MM-dd HH:mm:ss');
 };
-const UpdateSessionServer = async ({ id, start_time, end_time }) => {
+const UpdateSessionServer = async ({ id, start_time, end_time ,typeSession}) => {
   const startTimeParsed = parseISO(start_time);
   const endTimeParsed = parseISO(end_time);
 
@@ -85,10 +85,10 @@ const UpdateSessionServer = async ({ id, start_time, end_time }) => {
   const startTimeMySQL = convertToMySQLDatetime(start_time);
   const endTimeMySQL = convertToMySQLDatetime(end_time);
 
-  const sql = "UPDATE Sessions SET start_time = ?, end_time = ? WHERE id = ?";
+  const sql = "UPDATE Sessions SET start_time = ?, end_time = ? ,typeSession=? WHERE id = ?";
 
   try {
-    const [result] = await pool.query(sql, [startTimeMySQL, endTimeMySQL, id]);
+    const [result] = await pool.query(sql, [startTimeMySQL, endTimeMySQL,typeSession, id]);
 
     // Kiểm tra số lượng bản ghi bị ảnh hưởng
     if (result.affectedRows === 0) {
