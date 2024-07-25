@@ -35,7 +35,7 @@ const numberIN = [
     title: "Số điện thoại",
   },
   {
-    id: 7,
+    id: qư,
     name: "CCCD",
     title: "CCCD",
   },
