@@ -7,19 +7,20 @@ import { toast } from 'react-toastify';
 const Index = () => {
   const navigate = useNavigate()
   const { register, handleSubmit, formState: { errors } } = useForm();
-const [postLogin] = usePostLoginMutation()
-  const onSubmit = async(data) => {
+  const [postLogin] = usePostLoginMutation()
+  const onSubmit = async (data) => {
     try {
       const response = await postLogin(data).unwrap();
-      if(response.statusCode===200 && response.data.role ===3){
-        localStorage.setItem("accessToken",response.data.accessToken )
-        localStorage.setItem("refreshToken",response.data.refreshToken )
+      console.log("🚀 ~ onSubmit ~ response:", response)
+      if (response.statusCode === 200 && response.data.role === 3) {
+        localStorage.setItem("accessToken", response.data.accessToken)
+        localStorage.setItem("refreshToken", response.data.refreshToken)
         navigate('/')
       }
-      else{
+      else {
         toast.error(response.data.message)
       }
-   
+
     } catch (err) {
       console.error('Login failed:', err);
       toast.error(err.message)
