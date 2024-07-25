@@ -22,7 +22,7 @@ const getAllProfileServer = async (isActive) => {
     FROM Account ac 
     INNER JOIN Profile pr ON ac.id = pr.account_id 
     WHERE ac.isActive = ?`;
-
+ 
   try {
     const [results] = await pool.query(sql, [isActive]);
 
@@ -30,7 +30,7 @@ const getAllProfileServer = async (isActive) => {
       return ResponseStatus.createResponse(404, null);
     }
 
-    return ResponseStatus.createResponse(200, results[0]);
+    return ResponseStatus.createResponse(200, results);
   } catch (error) {
     return ResponseStatus.createResponse(500, error.message);
   }
