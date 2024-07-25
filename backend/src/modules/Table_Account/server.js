@@ -37,7 +37,7 @@ const getMuiltiAccountServer = async () => {
   }
 };
 
-const createAccountServer = async (username, password, role_id) => {
+const createAccountServer = async ({ username, password, role_id, firstname, lastname, phone, address, cccd }) => {
   if (!username || typeof username !== "string" || !username.trim()) {
     return ResponseStatus.createResponse(400, {
       message: "Invalid username provided.",
@@ -53,27 +53,74 @@ const createAccountServer = async (username, password, role_id) => {
       message: "Invalid role_id provided.",
     });
   }
-  const sql =
-    "INSERT INTO Account (username, password, role_id) VALUES (?, ?, ?)";
+  if (!firstname || typeof firstname !== "string" || !firstname.trim()) {
+    return ResponseStatus.createResponse(400, {
+      message: "Invalid firstname provided.",
+    });
+  }
+  if (!lastname || typeof lastname !== "string" || !lastname.trim()) {
+    return ResponseStatus.createResponse(400, {
+      message: "Invalid lastname provided.",
+    });
+  }
+  if (!phone || typeof phone !== "string" || !phone.trim()) {
+    return ResponseStatus.createResponse(400, {
+      message: "Invalid phone provided.",
+    });
+  }
+  if (!address || typeof address !== "string" || !address.trim()) {
+    return ResponseStatus.createResponse(400, {
+      message: "Invalid address provided.",
+    });
+  }
+  if (!cccd || typeof cccd !== "string" || !cccd.trim()) {
+    return ResponseStatus.createResponse(400, {
+      message: "Invalid CCCD provided.",
+    });
+  }
+
+  const sqlInsertAccount = "INSERT INTO Account (username, password, role_id) VALUES (?, ?, ?)";
+  const sqlInsertProfile = "INSERT INTO Profile (account_id, firstname, lastname, phoneNumber, address, CCCD) VALUES (?, ?, ?, ?, ?, ?)";
 
   try {
-    const hashedPassword = await hashPW(password)
-    const [result] = await pool.query(sql, [username,hashedPassword , role_id]);
+    const hashedPassword = await hashPW(password);
+
+    // Begin transaction
+    await pool.query('START TRANSACTION');
+
+    const [result] = await pool.query(sqlInsertAccount, [username, hashedPassword, role_id]);
 
     if (result.affectedRows === 0) {
+      await pool.query('ROLLBACK');
       return ResponseStatus.createResponse(500, {
         message: "Failed to create Account.",
       });
     }
 
+    const accountId = result.insertId;
+
+    const [result1] = await pool.query(sqlInsertProfile, [accountId, firstname, lastname, phone, address, cccd]);
+
+    if (result1.affectedRows === 0) {
+      await pool.query('ROLLBACK');
+      return ResponseStatus.createResponse(500, {
+        message: "Failed to create Profile.",
+      });
+    }
+
+    // Commit transaction
+    await pool.query('COMMIT');
+
     return ResponseStatus.createResponse(201, {
       message: "Account created successfully.",
     });
   } catch (error) {
-    return ResponseStatus.createResponse(500, error.message);
+    await pool.query('ROLLBACK');
+    return ResponseStatus.createResponse(500, {
+      message: error.message,
+    });
   }
 };
-
 const updateAccountServer = async (id, username, password, role_id) => {
   if (!username || typeof username !== "string" || !username.trim()) {
     return ResponseStatus.createResponse(400, {
