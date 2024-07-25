@@ -14,6 +14,12 @@ const index = () => {
     else if(location.pathname ===  '/category'){
       setNameRouter('danh mục sản phẩm')
     }
+    else if(location.pathname ===  '/orther'){
+      setNameRouter('tạo các thành phần phụ')
+    }
+    else if(location.pathname ===  '/listcustomer'){
+      setNameRouter('danh sách khách hàng')
+    }
  
     
   }, [location]);

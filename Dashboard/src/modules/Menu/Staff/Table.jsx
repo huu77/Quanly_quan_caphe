@@ -73,7 +73,7 @@ const Table = () => {
                       <li>
                         <Link to={'/detailstaff'}>Xem chi tiết</Link>
                       </li>
-                      <li  onClick={()=>(toast.success("Xóa nhân viên thành công!"))}>
+                      <li  onClick={()=>(toast.success("Xóa nhân viên thành công!"))} className="text-rose-600">
                         <span>Xóa nhân viên</span>
                       </li>
                      
