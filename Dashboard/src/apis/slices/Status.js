@@ -4,14 +4,13 @@ import axiosBaseQuery from "../AxiosBaseQuery";
 const API_URL = import.meta.env.VITE_APP_URL;
 
 const StatusApi = createApi({
-  reducerPath: "StatusApi",
-  tagTypes: ['StatusTable'], 
+  reducerPath: "StatusApi",tagTypes: ['StatusTable'], 
   baseQuery: axiosBaseQuery({
     baseUrl: API_URL,
   }),
   keepUnusedDataFor: 600,
   endpoints: (build) => ({
-    getAllStatusTable: build.query({
+    getsStatusTable: build.query({
       query: () => ({
         url: `/muiltiStatusTable`,
         method: "GET",
@@ -26,8 +25,23 @@ const StatusApi = createApi({
       }),
       invalidatesTags: ['StatusTable'], 
     }),
+    getsStatus: build.query({
+      query: () => ({
+        url: `/muiltiStatus`,
+        method: "GET",
+      }),
+      providesTags: ['StatusTable'],
+    }),
+    postStatus: build.mutation({
+      query: (body) => ({
+        url: `/createStatus`,
+        method: "POST",
+        data: body,
+      }),
+      invalidatesTags: ['StatusTable'], 
+    }),
   }),
 });
 
-export const { useGetAllStatusTableQuery, usePostStatusTableMutation } = StatusApi;
+export const { useGetsStatusTableQuery, usePostStatusTableMutation ,useGetsStatusQuery,usePostStatusMutation} = StatusApi;
 export default StatusApi;

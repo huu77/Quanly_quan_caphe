@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useGetAllStatusTableQuery, usePostStatusTableMutation } from "../../../apis/slices/Status";
+import { useGetsStatusTableQuery, usePostStatusTableMutation } from "../../../apis/slices/Status";
 
 const Tab2 = () => {
   const [newStatus, setNewStatus] = useState("");
-  const { data, error, isLoading, refetch } = useGetAllStatusTableQuery();
+  const { data, error, isLoading, refetch } = useGetsStatusTableQuery();
   const [postStatusTable] = usePostStatusTableMutation();
 
   const handleCreateStatus = async () => {
@@ -16,8 +16,7 @@ const Tab2 = () => {
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+ 
 
   return (
     <>
