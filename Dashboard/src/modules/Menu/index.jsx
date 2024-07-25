@@ -11,6 +11,9 @@ const index = () => {
     }else if(location.pathname ===  '/session'){
       setNameRouter('phiên làm việc')
     }
+    else if(location.pathname ===  '/category'){
+      setNameRouter('danh mục sản phẩm')
+    }
  
     
   }, [location]);

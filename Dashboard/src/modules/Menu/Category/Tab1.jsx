@@ -1,10 +1,24 @@
-import React from "react";
-
+import React, { useState } from "react";
+import { toast } from "react-toastify";
 const Tab1 = () => {
+  const [valueName,setValueName] = useState('')
+  const hanldeChange=(e)=>{
+    setValueName(e.target.value.toUpperCase())
+  }
+  const handleClick =()=>{
+    toast.success("Tạo thành công!")
+  }
   return (
     <div>
       <div>
-        <button className="btn btn-outline">Tạo thêm danh mục</button>
+        <button
+          className="btn btn-outline"
+          onClick={() =>
+            document.getElementById("modalCreateCategory").showModal()
+          }
+        >
+          Tạo thêm danh mục
+        </button>
       </div>
       <div>
         <div className="overflow-x-auto">
@@ -67,6 +81,29 @@ const Tab1 = () => {
             </table>
           </div>
           <div className="modal-action"></div>
+        </div>
+      </dialog>
+
+      {/* category */}
+      <dialog id="modalCreateCategory" className="modal">
+        <div className="modal-box">
+          <h1 className="font-bold mb-5">Tạo danh mục</h1>
+          <div className="flex justify-between">
+            <input
+              type="text"
+              placeholder="Tạp danh mục"
+              onChange={hanldeChange}
+              value={valueName}
+              className="input input-bordered input-primary w-full max-w-xs"
+            />
+            <button className="btn btn-outline" onClick={handleClick}>Tạo</button>
+          </div>
+          <div className="modal-action">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn">Close</button>
+            </form>
+          </div>
         </div>
       </dialog>
     </div>

@@ -137,7 +137,7 @@ const CreateSessions = () => {
             </button>
           </form>
 
-          <div className="flex flex-col justify-start items-start gap-5">
+          <div className="flex flex-col justify-start items-start gap-5 w-full">
             <label htmlFor="sessiondate" className="font-bold text-lg">
               Danh sách ca trong tuần tới
             </label>
@@ -156,7 +156,6 @@ const CreateSessions = () => {
               <option>Sáng</option>
               <option>Chiều</option>
               <option>Tối</option>
-              <option>Làm 8 tiếng</option>
               <option>Làm toàn thời gian</option>
             </select>
             <div className="flex justify-start items-center gap-5">

@@ -7,17 +7,12 @@ import { vi } from "date-fns/locale";
 
 
 const DayPickerCompoment = ({ setDataDay }) => {
-  const initialRange = {
-    from: new Date(),
-    to: addDays(new Date(), 1),
-  };
-
-  const [range, setRange] = useState(initialRange);
+ 
+  const [range, setRange] = useState(new Date());
 
   const handleDayClick = (range) => {
-    console.log(range)
-    if (range?.from && range?.to) {
-      setDataDay({startday:format(new Date(range?.from), 'dd/MM/yyyy') ,enday:format(new Date(range?.to), 'dd/MM/yyyy')})
+    if (range) {
+      setDataDay(format(new Date(range), 'yyyy-MM-dd'));
     }
     setRange(range);
   };
@@ -27,7 +22,7 @@ const DayPickerCompoment = ({ setDataDay }) => {
       numberOfMonths={1}
       pagedNavigation
       onSelect={handleDayClick}
-      mode="range"
+      mode="single"
       selected={range}
       locale={vi}
       className="my-day-picker"
