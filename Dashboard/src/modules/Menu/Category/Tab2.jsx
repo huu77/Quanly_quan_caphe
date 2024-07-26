@@ -40,7 +40,7 @@ const Tab2 = () => {
     try {
       await createProduct(productData).unwrap();
       // Handle successful product creation
-      toast.success("Tạo thành công!")
+      // toast.success("Tạo thành công!")
     } catch (error) {
       // Handle error
       toast.error("Tạo thành thất bại")
