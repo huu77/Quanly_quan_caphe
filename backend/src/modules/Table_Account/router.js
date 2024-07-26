@@ -12,4 +12,5 @@ router.delete('/deleteAccount/:id',authenticateJWT(['Manager']), controller.dele
 router.put('/updateIsActive/:id',authenticateJWT(['Manager']), controller.UpdateIsActive);// xoa mềm
 router.post('/login', controller.login);
 router.post('/refreshtoken',authenticateJWT(['Manager','Start','Counter Staff']), controller.refreshtoken);
+router.get('/getNvType',controller.getNVToType)
 module.exports = router;

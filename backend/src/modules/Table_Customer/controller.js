@@ -11,7 +11,10 @@ const getMuiltiCustomer = async (req, res) => {
     const result = await server.getMuiltiCustomerServer();
     return res.status(200).json(result);
 }
-
+const getAllCustomer = async (req, res) => {
+    const result = await server.getAllCustomerServer();
+    return res.status(200).json(result);
+}
 const createCustomer = async (req, res) => {
     const { account_id, firstname, lastname, phone, address, cccd } = req.body;
     const result = await server.createCustomerServer(account_id, firstname, lastname, phone, address, cccd);
@@ -36,4 +39,5 @@ module.exports = {
     createCustomer,
     updateCustomer,
     deleteCustomer,
+    getAllCustomer
 };
