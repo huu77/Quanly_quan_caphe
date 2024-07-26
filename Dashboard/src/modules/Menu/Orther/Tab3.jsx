@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useGetsStatusQuery,usePostStatusMutation } from "../../../apis/slices/Status";
+import { useGetsStatusQuery, usePostStatusMutation } from "../../../apis/slices/Table";
+ 
 
 const Tab3 = () => {
   const [newStatus, setNewStatus] = useState("");
