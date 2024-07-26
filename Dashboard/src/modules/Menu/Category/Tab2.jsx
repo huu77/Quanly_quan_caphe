@@ -1,17 +1,23 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useCreateProductMutation, useGetALLProductQuery } from "../../../apis/slices/Product";
+import { useCreateProductMutation, useGetALLProductQuery, useDeleteProductMutation } from "../../../apis/slices/Product";
 import { useGetAllCategoryQuery } from "../../../apis/slices/Category";
 import { toast } from "react-toastify";
-import cafe from "../../../.././public/cafe.jpg"
+import cafe from "../../../.././public/cafe.jpg";
+import ModleUpdateProduct from "./ModleUpdateProduct";
 
 const Tab2 = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [file, setFile] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [id, setid] = useState(null);
+
+
   const [createProduct] = useCreateProductMutation();
+  const [deleteProduct] = useDeleteProductMutation(); // Add delete mutation
   const { data } = useGetAllCategoryQuery();
-  const { data: productdata } = useGetALLProductQuery()
-  console.log("🚀 ~ Tab2 ~ productdata:", productdata)
+  const { data: product, refetch } = useGetALLProductQuery(); // Refetch to update UI
+
   const transformFile = (file) => {
     const reader = new FileReader();
     if (file) {
@@ -36,29 +42,32 @@ const Tab2 = () => {
       category_id: Number(formData.category_id), // Ensure category_id is a number
     };
 
-    console.log("🚀 ~ handleSubmit ~ productData:", productData);
     try {
       await createProduct(productData).unwrap();
-      // Handle successful product creation
-      toast.success("Tạo thành công!")
+      toast.success("Tạo thành công!");
+      refetch(); // Refetch product list after creation
     } catch (error) {
-      // Handle error
-      toast.error("Tạo thành thất bại")
+      toast.error("Tạo thành thất bại");
     }
   };
 
-  console.log(errors);
+  const handleDelete = async (productId) => {
+    try {
+      await deleteProduct(productId).unwrap();
+      toast.success("Xóa thành công!");
+      refetch(); // Refetch product list after deletion
+    } catch (error) {
+      toast.error("Xóa thất bại");
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className={`flex flex-col gap-10 `}>
       <div className="flex justify-center items-center gap-2">
         <div className="avatar">
           <div className="w-24 rounded-xl">
             <img
-              src={
-                file ||
-                cafe
-              }
+              src={file || cafe}
               alt="Product"
             />
           </div>
@@ -79,7 +88,7 @@ const Tab2 = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full grid grid-cols-3 gap-5">
           <div className="flex flex-col">
-            <label className=" flex items-center gap-2 w-full">
+            <label className="flex items-center gap-2 w-full">
               Tên sản phẩm
             </label>
             <input
@@ -89,10 +98,9 @@ const Tab2 = () => {
               {...register("name", { required: "Tên sản phẩm là bắt buộc" })}
             />
             {errors.name && <p className="text-red-500">{errors.name.message}</p>}
-
           </div>
-          <div className="flex flex-col" >
-            <label className=" flex items-center gap-2 w-full">
+          <div className="flex flex-col">
+            <label className="flex items-center gap-2 w-full">
               Giá
             </label>
             <input
@@ -109,18 +117,17 @@ const Tab2 = () => {
             {errors.price && <p className="text-red-500">{errors.price.message}</p>}
           </div>
           <div className="flex flex-col">
-            <label className=" flex items-center gap-2 w-full">
+            <label className="flex items-center gap-2 w-full">
               Mô tả
             </label>
             <input
               type="text"
-              className="border rounded p-2"
+              className="grow"
               placeholder=""
-
+              {...register("description", { required: "Mô tả là bắt buộc" })}
             />
+            {errors.description && <p className="text-red-500">{errors.description.message}</p>}
           </div>
-
-
           <div className="flex flex-col">
             <select
               className="select select-bordered w-full"
@@ -133,58 +140,80 @@ const Tab2 = () => {
                 <option key={item.id} value={item.id}>{item.name}</option>
               ))}
             </select>
-            {errors.category_id && <p className="text-red-500" >{errors.category_id.message}</p>}
+            {errors.category_id && <p className="text-red-500">{errors.category_id.message}</p>}
           </div>
         </div>
-        <div className=" mt-3">
+        <div className="mt-3">
           <button type="submit" className="btn btn-outline">
             Tạo thêm sản phẩm
           </button>
         </div>
       </form>
-      <div class="overflow-x-auto">
-        <table class="table">
+      <div className="overflow-x-auto">
+        <table className="table">
           <thead>
             <tr>
-              <th>
-
-              </th>
-              <th>Name</th>
-              <th>giá</th>
-              <th>mô tả</th>
               <th></th>
+              <th>Giá</th>
+              <th>Mô tả</th>
+              <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>
-                {productdata?.data?.map((item, index) => (
-                  <div class="flex items-center gap-3">
-                    <div class="avatar">
-                      <div class="mask mask-squircle h-12 w-12">
+            {product?.data?.map((item, index) => (
+              <tr key={index}>
+                <td>
+                  <div className="flex items-center gap-3">
+                    <div className="avatar">
+                      <div className="mask mask-squircle h-12 w-12">
                         <img
                           src={item.image}
-                          alt="Avatar Tailwind CSS Component" />
+                          alt="Product"
+                        />
                       </div>
                     </div>
                     <div>
-                      <div class="font-bold">{item.name}</div>
-                      <div class="text-sm opacity-50">United States</div>
+                      <div className="font-bold">{item.name}</div>
+                      <div className="text-sm opacity-50">{item.description}</div>
                     </div>
                   </div>
-                ))}
+                </td>
+                <td>{item.price}</td>
+                <td>{item.description}</td>
+                <td className="flex flex-col">
 
-              </td>
+                  <button
+                    className="bg-red-500 p-3 w-[60px] rounded m-1 text-white"
+                    onClick={() => handleDelete(item.id)}
 
+                  >Xóa</button>
+                  <div>
+                    <button
+                      className="bg-green-500 p-3 w-[60px] rounded m-1 text-white"
+                      onClick={() => {
+                        setid(item.id);
+                        setIsOpen(!isOpen);
+                      }}>
 
+                      sửa
+                    </button>
 
-
-            </tr>
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
-
         </table>
       </div>
-    </div>
+      {isOpen &&
+
+        <ModleUpdateProduct
+          setIsOpen={setIsOpen}
+          Productid={id}
+        />
+
+      }
+    </div >
   );
 };
 

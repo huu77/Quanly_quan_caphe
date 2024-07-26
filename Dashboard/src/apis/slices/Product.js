@@ -23,6 +23,13 @@ const ProductsApi = createApi({
         data: body,
       }),
     }),
+    updateProduct: build.mutation({
+      query: (body) => ({
+        url: `/updateProduct`,
+        method: "PUT",
+        data: body,
+      }),
+    }),
     GetALLProduct: build.query({
       query: () => ({
         url: `/muiltiProduct`,
@@ -30,8 +37,29 @@ const ProductsApi = createApi({
 
       }),
     }),
+    DeleteProduct: build.mutation({
+      query: (Productid) => ({
+        url: `/deleteProduct/${Productid}`,
+        method: "DELETE",
+
+      }),
+    }),
+    GetOneProduct: build.query({
+      query: (Productid) => ({
+        url: `/oneProduct/${Productid}`,
+        method: "get",
+
+      }),
+    }),
   }),
 });
 
-export const { usePostLoginMutation, useCreateProductMutation, useGetALLProductQuery } = ProductsApi;
+export const {
+  usePostLoginMutation,
+  useCreateProductMutation,
+  useGetALLProductQuery,
+  useDeleteProductMutation,
+  useGetOneProductQuery,
+  useUpdateProductMutation
+} = ProductsApi;
 export default ProductsApi;
