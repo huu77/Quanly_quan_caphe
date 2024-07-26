@@ -1,4 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
+
 import axiosBaseQuery from "../AxiosBaseQuery";
 const API_URL = import.meta.env.VITE_APP_URL;
 
@@ -12,6 +13,7 @@ const AccountsApi = createApi({
     postLogin: build.mutation({
       query: (body) => ({
         url: `/login`,
+
         method: "POST",
         data: body,
       }),
@@ -19,7 +21,8 @@ const AccountsApi = createApi({
     getAllProfile: build.query({
       query: (isActive) => ({
         url: `/MuiltiProfile/${isActive}`,
-        method: "GET",
+
+        method: "GET"
       }),
     }),
     postCreateAccount: build.mutation({

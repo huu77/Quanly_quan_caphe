@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { useGetAllCategoryQuery } from "../../../apis/slices/Category";
+import index from './../Sesion/index';
+
+
+
 const Tab1 = () => {
-  const [valueName,setValueName] = useState('')
-  const hanldeChange=(e)=>{
+  const [valueName, setValueName] = useState('')
+  const { data } = useGetAllCategoryQuery()
+  console.log("🚀 ~ Tab1 ~ data:", data)
+  const hanldeChange = (e) => {
     setValueName(e.target.value.toUpperCase())
   }
-  const handleClick =()=>{
+  const handleClick = () => {
     toast.success("Tạo thành công!")
   }
   return (
@@ -34,17 +41,23 @@ const Tab1 = () => {
             </thead>
             <tbody>
               {/* row 1 */}
-              <tr
-                className="hover"
-                onClick={() =>
-                  document.getElementById("my_modal_4").showModal()
-                }
-              >
-                <th>1</th>
-                <td>Cy Ganderton</td>
-                <td>Quality Control Specialist</td>
-                <td>Blue</td>
-              </tr>
+
+              {data?.data?.map((e, index) => (
+
+
+                <tr
+                  className="hover"
+                  onClick={() =>
+                    document.getElementById("my_modal_4").showModal()
+                  }
+                >
+                  <th>{index}</th>
+                  <td>{e.name}</td>
+                  <td>Quality Control Specialist</td>
+                  <td>Blue</td>
+                </tr>
+              )
+              )}
             </tbody>
           </table>
         </div>
