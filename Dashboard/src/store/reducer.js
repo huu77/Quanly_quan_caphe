@@ -12,6 +12,7 @@ const Reducer = {
     [Status.reducerPath]: Table.reducer,
     [Category.reducerPath]: Category.reducer,
 
+
 }
 
 export default Reducer
