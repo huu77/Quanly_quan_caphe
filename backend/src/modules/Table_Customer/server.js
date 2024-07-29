@@ -164,11 +164,26 @@ const deleteCustomerServer = async (id) => {
   }
 };
 
+const checkCustomerExists = async (phoneNumber) => {
+  const sql = "SELECT * FROM Customer WHERE phoneNumber = ?";
+
+  try {
+    const [results] = await pool.query(sql, [phoneNumber]);
+
+    return results.length > 0;
+  } catch (error) {
+    console.error("Database query error:", error);
+    return false;
+  }
+};
+
+
 module.exports = {
   getCustomerServer,
   getMuiltiCustomerServer,
   createCustomerServer,
   updateCustomerServer,
   deleteCustomerServer,
-  getAllCustomerServer
+  getAllCustomerServer,
+  checkCustomerExists,
 };

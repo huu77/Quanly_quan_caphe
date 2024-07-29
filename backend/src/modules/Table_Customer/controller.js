@@ -33,11 +33,17 @@ const deleteCustomer = async (req, res) => {
     return res.status(200).json(result.data);
 };
 
+const checkCustomerExists = async (req, res) => {
+    const phoneNumber = req.params.phoneNumber;
+    const result = await server.checkCustomerExists(phoneNumber);
+    return res.status(200).json(result);
+}
 module.exports = {
     getCustomer,
     getMuiltiCustomer,
     createCustomer,
     updateCustomer,
     deleteCustomer,
-    getAllCustomer
+    getAllCustomer, 
+    checkCustomerExists
 };
