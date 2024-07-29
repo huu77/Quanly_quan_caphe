@@ -1,48 +1,81 @@
-import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types'; // Import PropTypes
+import { useGetProductByTableQuery } from '../../apis/slices/Product';
+import { useEffect, useMemo } from 'react';
 
-const OrderHistoryModal = ({ closeModal }) => {
-  const [orderHistory, setOrderHistory] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const OrderHistoryModal = ({ idTable, closeModal }) => {
+  const { data, error: productsError, isLoading: isLoadingProducts } = useGetProductByTableQuery(idTable);
 
   useEffect(() => {
-    const fetchOrderHistory = async () => {
-      try {
-        const response = await fetch('/api/order-history'); // Replace with your API endpoint
-        if (!response.ok) {
-          throw new Error('Failed to fetch order history');
-        }
-        const data = await response.json();
-        setOrderHistory(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    console.log("API data:", data);
+    console.log("API error:", productsError);
+  }, [data, productsError]);
 
-    fetchOrderHistory();
-  }, []); // Empty dependency array means this will run once when the component mounts
+  // Ensure data is an array
+  const orderHistory = Array.isArray(data?.data) ? data.data : [];
+
+  // Group products by product_id and calculate total quantity and amount
+  const groupedProducts = useMemo(() => {
+    const productMap = {};
+    let grandTotal = 0;
+
+    orderHistory.forEach(item => {
+      const { product_id, item_name, price, quantity, description, image } = item;
+
+      if (!productMap[product_id]) {
+        productMap[product_id] = {
+          id: product_id,
+          name: item_name,
+          quantity: 0,
+          totalAmount: 0,
+          price: price,
+          description: description,
+          image: image
+        };
+      }
+
+      const totalAmount = price * quantity;
+      productMap[product_id].quantity += quantity;
+      productMap[product_id].totalAmount += totalAmount;
+
+      grandTotal += totalAmount;
+    });
+
+    return { products: Object.values(productMap), grandTotal };
+  }, [orderHistory]);
+
+  if (isLoadingProducts) return <div>Loading products...</div>;
+  if (productsError) return <div>Error loading products</div>;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white rounded-lg p-5 w-full max-w-md">
         <h2 className="text-xl font-bold mb-4">Order History</h2>
-        {loading && <p>Loading order history...</p>}
-        {error && <p className="text-red-500">{error}</p>}
+
         <ul>
-          {orderHistory.length > 0 ? (
-            orderHistory.map((order, index) => (
-              <li key={index} className="py-2 border-b">
-                <p>{order.name} - Quantity: {order.quantity}</p>
-                <p>Price: ${order.price.toFixed(2)}</p>
-              </li>
+          {groupedProducts.products.length > 0 ? (
+            groupedProducts.products.map((product) => (
+              <div key={product.id} className="relative flex border p-4 rounded-lg shadow">
+                <div className="flex-1 pr-4">
+                  <h3 className="text-xl font-semibold text-gray-900">{product.name}</h3>
+                  <p className="text-gray-700">{product.description}</p>
+                  <p className="text-gray-900 font-bold">${product.price.toFixed(2)}</p>
+                  <p className="text-gray-900">Quantity: {product.quantity}</p>
+                </div>
+                {/* Uncomment if image is needed */}
+                <div className="flex-shrink-0 relative">
+                  <img src={product.image} alt={product.name} style={{ width: '140px', height: '150px' }} className="object-contain rounded-lg" />
+                </div>
+              </div>
             ))
           ) : (
-            !loading && <p>No order history available.</p>
+            <p>No order history available.</p>
           )}
         </ul>
+
+        <div className="mt-4">
+          <p className="text-gray-900 font-bold">Grand Total: ${groupedProducts.grandTotal.toFixed(2)}</p>
+        </div>
+
         <button className="btn btn-primary mt-4" onClick={closeModal}>
           Close
         </button>
@@ -54,6 +87,7 @@ const OrderHistoryModal = ({ closeModal }) => {
 // Define prop types for the component
 OrderHistoryModal.propTypes = {
   closeModal: PropTypes.func.isRequired, // Validate closeModal as a required function
+  idTable: PropTypes.string.isRequired, // Validate idTable as a required string
 };
 
 export default OrderHistoryModal;

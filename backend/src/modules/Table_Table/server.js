@@ -140,10 +140,53 @@ const deleteTableServer = async (id) => {
     return ResponseStatus.createResponse(500, error.message);
   }
 };
+
+const getProductByTableIdServer = async (id) => {
+  try {
+    // Query to check the status of the specific table
+    const [tableRows] = await pool.query('SELECT status_table_id FROM RestaurantTable WHERE id = ?', [id]);
+
+    if (tableRows.length === 0) {
+      // If the table ID does not exist
+      return ResponseStatus.createResponse(404, { message: 'Table not found' });
+    }
+
+    const tableStatus = tableRows[0].status_table_id;
+
+    if (tableStatus !== 3) {
+      // If the table status is not 'Occupied' (status_table_id = 3)
+      return ResponseStatus.createResponse(200, []);
+    }
+
+    // Query to get products associated with the table with status_table_id = 3
+    const [orderDetails] = await pool.query(
+      `SELECT DISTINCT *
+       FROM OrderDetail
+       JOIN Product ON OrderDetail.product_id = Product.id
+       JOIN \`Order\` ON OrderDetail.order_id = \`Order\`.id
+       WHERE \`Order\`.table_id = ?`,
+      [id]
+    );
+
+    // Return the list of products
+    return ResponseStatus.createResponse(200, orderDetails);
+
+  } catch (err) {
+    console.error('Error fetching products:', err);
+    return ResponseStatus.createResponse(500, {
+      message: 'Internal Server Error',
+      error: err.message
+    });
+  }
+};
+
+
+
 module.exports = {
   getTableServer,
   getMuiltiTableServer,
   createTableServer,
   UpdateTableServer,
   deleteTableServer,
+  getProductByTableIdServer
 };

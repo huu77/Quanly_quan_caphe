@@ -8,7 +8,6 @@ const Index = () => {
   const { data: products, error: productsError, isLoading: isLoadingProducts } = useGetProductsQuery();
   const { data: menu, error: menuError, isLoading: isLoadingMenu } = useGetMenuQuery();
   const [cart, setCart] = useState([]);
-  const [orderHistory, setOrderHistory] = useState([]); // State for order history
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false); // State for order history modal
   const { id } = useParams();
@@ -23,7 +22,6 @@ const Index = () => {
     } else {
       setCart([...cart, { ...product, quantity: 1 }]);
     }
-    setOrderHistory([...orderHistory, { ...product, quantity: 1 }]); // Add to order history
   };
 
   const cartQuantity = cart.reduce((total, item) => total + item.quantity, 0);
@@ -153,7 +151,7 @@ const Index = () => {
         </div>
       </div>
       {isCartOpen && <CartModal idTable={id} cart={cart} setCart={setCart} closeModal={() => setIsCartOpen(false)} />}
-      {isOrderHistoryOpen && <OrderHistoryModal closeModal={() => setIsOrderHistoryOpen(false)} />} {/* Place the OrderHistoryModal here */}
+      {isOrderHistoryOpen && <OrderHistoryModal idTable={id} closeModal={() => setIsOrderHistoryOpen(false)} />} {/* Place the OrderHistoryModal here */}
     </div>
   );
 };

@@ -185,11 +185,11 @@ const updateTableStatusAndOrderDetails = async (orderId, items, tableId, res) =>
         await pool.query('UPDATE `Order` SET total_amount = total_amount + ? WHERE id = ?', [totalAmount, orderId]);
         await pool.query('UPDATE RestaurantTable SET status_table_id = 3 WHERE id = ?', [tableId]);
 
-        return ResponseStatus.createResponse(201,{ order_id: orderId, message: 'Order created/updated successfully' });
+        return ResponseStatus.createResponse({ order_id: orderId, message: 'Order created/updated successfully' });
       }
     }
   } catch (err) {
-    return ResponseStatus.createResponse(500,{error: err.message});
+    return ResponseStatus.createResponse(500, { error: err.message });
   }
 };
 
@@ -207,14 +207,17 @@ const createOrderByCus = async (customer_id, table_id, items, res) => {
       const [orderResult] = await pool.query('INSERT INTO `Order` (user_id, table_id, status_id, total_amount) VALUES (?, ?, 3, 0)', [customer_id, table_id]);
       orderId = orderResult.insertId;
       await updateTableStatusAndOrderDetails(orderId, items, table_id, res);
+      return ResponseStatus.createResponse(201, { order_id: orderId, message: 'Order created successfully' });
     } else {
       // Table is 'Occupied', update existing order
       const [orderRows] = await pool.query('SELECT id FROM `Order` WHERE table_id = ? AND status_id = 3', [table_id]);
       orderId = orderRows[0].id;
       await updateTableStatusAndOrderDetails(orderId, items, table_id, res);
+      return ResponseStatus.createResponse(200, { order_id: orderId, message: 'Order updated successfully' });
+
     }
   } catch (err) {
-    return ResponseStatus.createResponse(500,{
+    return ResponseStatus.createResponse(500, {
       message: "errrrr",
       error: err.message
     });

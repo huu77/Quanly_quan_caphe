@@ -25,10 +25,17 @@ const deleteTable=async (req, res) => {
     const rs = await server.deleteTableServer(req.params.id);
     return res.status(200).json(rs);
 };
+
+const getProductByTableId = async (req, res) => {
+  const rs = await server.getProductByTableIdServer(req.params.id);
+  return res.status(200).json(rs);
+};
+
 module.exports = {
   getTable,
   getMuiltiTable,
   createTable,
   updateTable,
-  deleteTable
+  deleteTable, 
+  getProductByTableId
 };

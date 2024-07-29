@@ -10,4 +10,5 @@ router.get('/muiltiTable', controller.getMuiltiTable);
 router.post('/createTable',authenticateJWT(['Manager']), controller.createTable);
 router.put('/updateTable',authenticateJWT(['Manager']), controller.updateTable);
 router.delete('/deleteTable/:id',authenticateJWT(['Manager']),validateNumber, controller.deleteTable);
+router.get('/productByTable/:id', controller.getProductByTableId);
 module.exports = router;

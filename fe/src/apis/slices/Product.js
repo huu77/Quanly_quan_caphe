@@ -28,6 +28,12 @@ const ProductsApi = createApi({
         method: "GET",
       }),
     }),
+    getProductByTable: build.query({
+      query: (idTable) => ({
+        url: `/productByTable/${idTable}`,
+        method: "GET",
+      }),
+    }),
     createCustomer: build.mutation({
       query: (body) => ({
         url: `/createCustomer`,
@@ -38,5 +44,5 @@ const ProductsApi = createApi({
   }),
 });
 
-export const { useGetProductsQuery, useGetMenuQuery, useCheckPhoneNumberMutation, useCreateCustomerMutation } = ProductsApi;
+export const { useGetProductsQuery, useGetMenuQuery, useCheckPhoneNumberMutation, useCreateCustomerMutation, useGetProductByTableQuery } = ProductsApi;
 export default ProductsApi;
