@@ -11,4 +11,5 @@ router.get('/muiltiOrder', controller.getMuiltiOrder);
 router.post('/createOrder', controller.createOrder);
 router.put('/updateOrder',authenticateJWT(['Manager']), controller.updateOrder);
 router.delete('/deleteOrder/:id',authenticateJWT(['Manager']),validateNumber, controller.deleteOrder);
+router.post('/createOrderByCustomer', controller.createOrderByCustomer);
 module.exports = router;

@@ -153,9 +153,9 @@ INSERT INTO Status (name) VALUES ('Received');
 INSERT INTO Status (name) VALUES ('In Progress');
 INSERT INTO Status (name) VALUES ('Pending');
 
-INSERT INTO TableStatus (name) VALUES ('Reserved');
-INSERT INTO TableStatus (name) VALUES ('Available');
-INSERT INTO TableStatus (name) VALUES ('Occupied');
+INSERT INTO TableStatus (name) VALUES ('Reserved'); 
+INSERT INTO TableStatus (name) VALUES ('Available');có sẵn 
+INSERT INTO TableStatus (name) VALUES ('Occupied'); đã có chỗ
 
 INSERT INTO RestaurantTable (name, ORstring, status_table_id) VALUES ('Table 1', '',2);
 INSERT INTO RestaurantTable (name, ORstring, status_table_id) VALUES ('Table 2', '',2);

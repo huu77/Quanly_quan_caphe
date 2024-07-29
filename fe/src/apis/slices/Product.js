@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-
 import axiosBaseQuery from "../AxiosBaseQuery";
-const API_URL = import.meta.env.VITE_APP_ROOM_URL;
+
+const API_URL = import.meta.env.VITE_APP_URL;
 
 const ProductsApi = createApi({
   reducerPath: "ProductsApi",
@@ -10,17 +10,39 @@ const ProductsApi = createApi({
   }),
   keepUnusedDataFor: 600,
   endpoints: (build) => ({
-    postLogin: build.mutation({
+    getMenu: build.query({
+      query: () => ({
+        url: `/muiltiCategory`, // Updated URL to match the new API endpoint
+        method: "GET",
+      }),
+    }),
+    getProducts: build.query({
+      query: () => ({
+        url: `/muiltiProduct`,
+        method: "GET",
+      }),
+    }),
+    checkPhoneNumber: build.mutation({
       query: (body) => ({
-        url: `/v2/Agencies/sign-in`,
-
+        url: `/checkCustomerExists/${body}`,
+        method: "GET",
+      }),
+    }),
+    getProductByTable: build.query({
+      query: (idTable) => ({
+        url: `/productByTable/${idTable}`,
+        method: "GET",
+      }),
+    }),
+    createCustomer: build.mutation({
+      query: (body) => ({
+        url: `/createCustomer`,
         method: "POST",
         data: body,
       }),
     }),
-  
   }),
 });
 
-export const { usePostLoginMutation } = ProductsApi;
+export const { useGetProductsQuery, useGetMenuQuery, useCheckPhoneNumberMutation, useCreateCustomerMutation, useGetProductByTableQuery } = ProductsApi;
 export default ProductsApi;

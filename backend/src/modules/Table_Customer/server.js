@@ -73,16 +73,16 @@ ORDER BY
   }
 };
 const createCustomerServer = async (name, phoneNumber) => {
-  if (!name || typeof name !== "string" || !name.trim()) {
-    return ResponseStatus.createResponse(400, {
-      message: "Invalid name provided.",
-    });
-  }
-  if (!phoneNumber || typeof phoneNumber !== "string" || !phoneNumber.trim()) {
-    return ResponseStatus.createResponse(400, {
-      message: "Invalid phoneNumber provided.",
-    });
-  }
+  // if (!name || typeof name !== "string" || !name.trim()) {
+  //   return ResponseStatus.createResponse(400, {
+  //     message: "Invalid name provided.",
+  //   });
+  // }
+  // if (!phoneNumber || typeof phoneNumber !== "string" || !phoneNumber.trim()) {
+  //   return ResponseStatus.createResponse(400, {
+  //     message: "Invalid phoneNumber provided.",
+  //   });
+  // }
   const sql = "INSERT INTO Customer (name, phoneNumber) VALUES (?, ?)";
 
   try {
@@ -103,21 +103,21 @@ const createCustomerServer = async (name, phoneNumber) => {
   }
 };
 const updateCustomerServer = async (id, name, phoneNumber) => {
-  if (!id || typeof id !== "number") {
-    return ResponseStatus.createResponse(400, {
-      message: "Invalid id provided.",
-    });
-  }
-  if (!name || typeof name !== "string" || !name.trim()) {
-    return ResponseStatus.createResponse(400, {
-      message: "Invalid name provided.",
-    });
-  }
-  if (!phoneNumber || typeof phoneNumber !== "string" || !phoneNumber.trim()) {
-    return ResponseStatus.createResponse(400, {
-      message: "Invalid phoneNumber provided.",
-    });
-  }
+  // if (!id || typeof id !== "number") {
+  //   return ResponseStatus.createResponse(400, {
+  //     message: "Invalid id provided.",
+  //   });
+  // }
+  // if (!name || typeof name !== "string" || !name.trim()) {
+  //   return ResponseStatus.createResponse(400, {
+  //     message: "Invalid name provided.",
+  //   });
+  // }
+  // if (!phoneNumber || typeof phoneNumber !== "string" || !phoneNumber.trim()) {
+  //   return ResponseStatus.createResponse(400, {
+  //     message: "Invalid phoneNumber provided.",
+  //   });
+  // }
   const sql = "UPDATE Customer SET name = ?, phoneNumber = ? WHERE id = ?";
 
   try {
@@ -164,11 +164,26 @@ const deleteCustomerServer = async (id) => {
   }
 };
 
+const checkCustomerExists = async (phoneNumber) => {
+  const sql = "SELECT * FROM Customer WHERE phoneNumber = ?";
+
+  try {
+    const [results] = await pool.query(sql, [phoneNumber]);
+
+    return results[0];
+  } catch (error) {
+    console.error("Database query error:", error);
+    return false;
+  }
+};
+
+
 module.exports = {
   getCustomerServer,
   getMuiltiCustomerServer,
   createCustomerServer,
   updateCustomerServer,
   deleteCustomerServer,
-  getAllCustomerServer
+  getAllCustomerServer,
+  checkCustomerExists,
 };
