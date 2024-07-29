@@ -22,16 +22,21 @@ const ProductsApi = createApi({
         method: "GET",
       }),
     }),
-    postLogin: build.mutation({
+    checkPhoneNumber: build.mutation({
       query: (body) => ({
-        url: `/v2/Agencies/sign-in`,
+        url: `/checkCustomerExists/${body}`,
+        method: "GET",
+      }),
+    }),
+    createCustomer: build.mutation({
+      query: (body) => ({
+        url: `/createCustomer`,
         method: "POST",
         data: body,
       }),
     }),
-    
   }),
 });
 
-export const { useGetProductsQuery, usePostLoginMutation, useGetMenuQuery } = ProductsApi;
+export const { useGetProductsQuery, useGetMenuQuery, useCheckPhoneNumberMutation, useCreateCustomerMutation } = ProductsApi;
 export default ProductsApi;
