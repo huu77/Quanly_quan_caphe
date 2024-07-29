@@ -24,6 +24,7 @@ const Tab2 = () => {
     document.getElementById("modalupdatestatustable").showModal();
   };
   const [getTextUpdate,setTextUpdate] = useState("")
+  
 const handleUpdate=()=>{
 
 }
@@ -54,8 +55,8 @@ const handleUpdate=()=>{
             <tr>
               <th>#</th>
               <th>Name</th>
-              <th>Chỉnh sửa</th>
-              <th>Xóa</th>
+              {/* <th>Chỉnh sửa</th>
+              <th>Xóa</th> */}
             </tr>
           </thead>
           <tbody>
@@ -63,12 +64,12 @@ const handleUpdate=()=>{
               <tr key={status.id}>
                 <th>{status.id}</th>
                 <td>{status.name}</td>
-                <td className="cursor-pointer" onClick={handleShowModal}>
+                {/* <td className="cursor-pointer" onClick={handleShowModal}>
                   <AiFillEdit  size={24} />
                 </td>
                 <td className="cursor-pointer" onClick={handleShowModal}>
                   <AiOutlineDelete  size={24} />
-                </td>
+                </td> */}
               </tr>
             )) || (
               <tr>
@@ -80,19 +81,19 @@ const handleUpdate=()=>{
       </div>
       {/* modal */}
 
-      <dialog id="modalupdatestatustable" className="modal">
+      {/* <dialog id="modalupdatestatustable" className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Sửa lại</h3>
           <input type="text" placeholder=" " value={getTextUpdate} onChange={(e)=>setTextUpdate(e.target.value)} className="input input-bordered w-full max-w-xs mt-5" />
           <div className="modal-action">
           <button className="btn btn-outline" onClick={handleUpdate}>Sửa</button>
             <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
+              
               <button className="btn">Close</button>
             </form>
           </div>
         </div>
-      </dialog>
+      </dialog> */}
     </>
   );
 };

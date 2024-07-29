@@ -25,10 +25,25 @@ const deleteSession =async (req, res) => {
     const rs = await server.deleteSessionServer(req.params.id);
     return res.status(200).json(rs);
 };
+const createSessionDetail =async (req, res) => {
+  const rs = await server.createSessionDetailServer(req.body);
+  return res.status(200).json(rs);
+};
+const getAllDetailSession =async (req, res) => {
+  const rs = await server.getAllDetailSession();
+  return res.status(200).json(rs);
+};
+const getAllNVtoSession =async (req, res) => {
+  const rs = await server.getAllNVtoSessionServer(req.params.id);
+  return res.status(200).json(rs);
+};
 module.exports = {
   getSession,
   getMuiltiSession,
   createSession,
   updateSession,
-  deleteSession
+  deleteSession,
+  createSessionDetail,
+  getAllDetailSession,
+  getAllNVtoSession
 };
