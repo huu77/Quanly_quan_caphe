@@ -6,8 +6,8 @@ CREATE TABLE Role (
 
 CREATE TABLE Account (
     id INT AUTO_INCREMENT  PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    password VARCHAR(200) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(200) NOT NULL UNIQUE,
     role_id INT,
     isActive TINYINT(1) DEFAULT 1,
     FOREIGN KEY (role_id) REFERENCES Role(id)
@@ -72,7 +72,7 @@ CREATE TABLE RestaurantTable (
     id INT AUTO_INCREMENT  PRIMARY KEY,
     ORstring VARCHAR(200) NOT NULL,
     name VARCHAR(10) NOT NULL,
-    status_table_id INT NOT NULL,
+    status_table_id INT NOT NULL DEFAULT 2,
     FOREIGN KEY (status_table_id) REFERENCES TableStatus(id)
 );
 

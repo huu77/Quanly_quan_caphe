@@ -1,27 +1,17 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useCreateProductMutation, useGetALLProductQuery } from "../../../apis/slices/Product";
+import { useGetAllCategoryQuery } from "../../../apis/slices/Category";
+import { toast } from "react-toastify";
+import cafe from "../../../.././public/cafe.jpg"
 
 const Tab2 = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    price: "",
-    category_id: "",
-  });
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const [file, setFile] = useState(null);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    transformFile(file);
-  };
-
+  const [createProduct] = useCreateProductMutation();
+  const { data } = useGetAllCategoryQuery();
+  const { data: productdata } = useGetALLProductQuery()
+  console.log("🚀 ~ Tab2 ~ productdata:", productdata)
   const transformFile = (file) => {
     const reader = new FileReader();
     if (file) {
@@ -34,14 +24,31 @@ const Tab2 = () => {
     }
   };
 
-  const handleCategoryChange = (e) => {
-    const value = e.target.value;
-    setFormData((prev) => ({
-      ...prev,
-      category_id: value,
-    }));
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    transformFile(file);
   };
-console.log(formData,file)
+
+  const onSubmit = async (formData) => {
+    const productData = {
+      ...formData,
+      image: file,
+      category_id: Number(formData.category_id), // Ensure category_id is a number
+    };
+
+    console.log("🚀 ~ handleSubmit ~ productData:", productData);
+    try {
+      await createProduct(productData).unwrap();
+      // Handle successful product creation
+      // toast.success("Tạo thành công!")
+    } catch (error) {
+      // Handle error
+      toast.error("Tạo thành thất bại")
+    }
+  };
+
+  console.log(errors);
+
   return (
     <div className="flex flex-col gap-10">
       <div className="flex justify-center items-center gap-2">
@@ -50,7 +57,7 @@ console.log(formData,file)
             <img
               src={
                 file ||
-                "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                cafe
               }
               alt="Product"
             />
@@ -63,66 +70,119 @@ console.log(formData,file)
           type="file"
           name="file"
           id="imgsp"
-          className="hidden"
+          className="border rounded p-2"
           onChange={handleFileChange}
           accept="image/*"
           required
         />
       </div>
-      <div className="w-full grid grid-cols-3 gap-5">
-        <label className="input input-bordered flex items-center gap-2 w-full">
-          Tên sản phẩm
-          <input
-            type="text"
-            className="grow"
-            placeholder=""
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <label className="input input-bordered flex items-center gap-2 w-full">
-          Giá
-          <input
-            type="text"
-            className="grow"
-            placeholder=""
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <label className="input input-bordered flex items-center gap-2 w-full">
-          Mô tả
-          <input
-            type="text"
-            className="grow"
-            placeholder=""
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
-        </label>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="w-full grid grid-cols-3 gap-5">
+          <div className="flex flex-col">
+            <label className=" flex items-center gap-2 w-full">
+              Tên sản phẩm
+            </label>
+            <input
+              type="text"
+              className="border rounded p-2"
+              placeholder=""
+              {...register("name", { required: "Tên sản phẩm là bắt buộc" })}
+            />
+            {errors.name && <p className="text-red-500">{errors.name.message}</p>}
 
-        <select
-          className="select select-bordered w-full"
-          name="category_id"
-          value={formData.category_id}
-          onChange={handleCategoryChange}
-          required
-        >
-          <option value="" disabled>
-            Chọn danh mục sản phẩm
-          </option>
-          <option value="1">Han Solo</option>
-          <option value="2">Greedo</option>
-        </select>
-      </div>
-      <div>
-        <button className="btn btn-outline">Tạo thêm sản phẩm</button>
+          </div>
+          <div className="flex flex-col" >
+            <label className=" flex items-center gap-2 w-full">
+              Giá
+            </label>
+            <input
+              type="text"
+              className="border rounded p-2"
+              placeholder=""
+              {...register("price", {
+                required: "Giá là bắt buộc",
+                validate: {
+                  isNumber: value => !isNaN(value) || "Giá phải là số"
+                }
+              })}
+            />
+            {errors.price && <p className="text-red-500">{errors.price.message}</p>}
+          </div>
+          <div className="flex flex-col">
+            <label className=" flex items-center gap-2 w-full">
+              Mô tả
+            </label>
+            <input
+              type="text"
+              className="border rounded p-2"
+              placeholder=""
+
+            />
+          </div>
+
+
+          <div className="flex flex-col">
+            <select
+              className="select select-bordered w-full"
+              {...register("category_id", { required: "Danh mục là bắt buộc" })}
+            >
+              <option value="" disabled>
+                Chọn danh mục sản phẩm
+              </option>
+              {data?.data?.map((item) => (
+                <option key={item.id} value={item.id}>{item.name}</option>
+              ))}
+            </select>
+            {errors.category_id && <p className="text-red-500" >{errors.category_id.message}</p>}
+          </div>
+        </div>
+        <div className=" mt-3">
+          <button type="submit" className="btn btn-outline">
+            Tạo thêm sản phẩm
+          </button>
+        </div>
+      </form>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>
+
+              </th>
+              <th>Name</th>
+              <th>giá</th>
+              <th>mô tả</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                {productdata?.data?.map((item, index) => (
+                  <div class="flex items-center gap-3">
+                    <div class="avatar">
+                      <div class="mask mask-squircle h-12 w-12">
+                        <img
+                          src={item.image}
+                          alt="Avatar Tailwind CSS Component" />
+                      </div>
+                    </div>
+                    <div>
+                      <div class="font-bold">{item.name}</div>
+                      <div class="text-sm opacity-50">United States</div>
+                    </div>
+                  </div>
+                ))}
+
+              </td>
+
+
+
+
+            </tr>
+          </tbody>
+
+        </table>
       </div>
     </div>
   );

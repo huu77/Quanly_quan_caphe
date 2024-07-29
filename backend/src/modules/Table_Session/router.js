@@ -10,4 +10,8 @@ router.get('/muiltiSession',authenticateJWT(['Manager','Start','Counter Staff'])
 router.post('/createSession',authenticateJWT(['Manager']), controller.createSession);
 router.put('/updateSession',authenticateJWT(['Manager']), controller.updateSession);
 router.delete('/deleteSession/:id',authenticateJWT(['Manager']),validateNumber, controller.deleteSession);
+
+router.post('/createSessionDetail',authenticateJWT(['Manager']), controller.createSessionDetail);
+router.get('/getAllDetailSession',authenticateJWT(['Manager']), controller.getAllDetailSession);
+router.get('/getAllNVtoSession/:id',authenticateJWT(['Manager']), controller.getAllNVtoSession);
 module.exports = router;

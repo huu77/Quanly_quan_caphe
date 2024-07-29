@@ -1,14 +1,14 @@
 import React from 'react'
-import CreateSessions from './CreateSessions'
-import ManageSession from './ManageSession'
+import Tab1 from './Tab1'
+import Tab2 from './Tab2'
  
-
 const Tabs = () => {
+    
   return (
     <div role="tablist" className="tabs tabs-lifted">
-  <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="Tạo ca làm việc cho nhân viên " defaultChecked/>
+  <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="Danh sách khách hàng " defaultChecked/>
   <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-  <CreateSessions/>
+    <Tab1/>
   </div>
 
   <input
@@ -16,13 +16,12 @@ const Tabs = () => {
     name="my_tabs_2"
     role="tab"
     className="tab"
-    aria-label="Quản lý ca làm việc"
+    aria-label="Danh sách order"
      />
   <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-  <ManageSession/>  
+    <Tab2/>
   </div>
-
-  
+   
 </div>
   )
 }
