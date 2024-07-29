@@ -1,9 +1,10 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
+
 import axiosBaseQuery from "../AxiosBaseQuery";
 const API_URL = import.meta.env.VITE_APP_URL;
 
-const ProductsApi = createApi({
-  reducerPath: "ProductsApi",
+const AccountsApi = createApi({
+  reducerPath: "AccountsApi",
   baseQuery: axiosBaseQuery({
     baseUrl: API_URL,
   }),
@@ -11,27 +12,28 @@ const ProductsApi = createApi({
   endpoints: (build) => ({
     postLogin: build.mutation({
       query: (body) => ({
-        url: `/v2/Agencies/sign-in`,
-        method: "POST",
-        data: body,
-      }),
-    }),
-    createProduct: build.mutation({
-      query: (body) => ({
-        url: `/createProduct`,
-        method: "POST",
-        data: body,
-      }),
-    }),
-    GetALLProduct: build.query({
-      query: () => ({
-        url: `/muiltiProduct`,
-        method: "GET",
+        url: `/login`,
 
+        method: "POST",
+        data: body,
+      }),
+    }),
+    getAllProfile: build.query({
+      query: (isActive) => ({
+        url: `/MuiltiProfile/${isActive}`,
+
+        method: "GET"
+      }),
+    }),
+    postCreateAccount: build.mutation({
+      query: (body) => ({
+        url: `/createAccount`,
+        method: "POST",
+        data: body,
       }),
     }),
   }),
 });
 
-export const { usePostLoginMutation, useCreateProductMutation, useGetALLProductQuery } = ProductsApi;
-export default ProductsApi;
+export const { usePostLoginMutation, useGetAllProfileQuery, usePostCreateAccountMutation } = AccountsApi;
+export default AccountsApi;

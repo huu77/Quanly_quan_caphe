@@ -12,6 +12,7 @@ const index = () => {
         </p>
         <button className="btn btn-primary">Get Started</button>
       </div>
+      
     </div>
   </div>
   )

@@ -13,8 +13,8 @@ const getMuiltiSession =async (req, res) => {
 };
 
 const createSession =async (req, res) => {
-    const {start_time,end_time} =req.body
-    const rs = await server.createSessionServer(start_time,end_time);
+    const {start_time,end_time,typeSession} =req.body
+    const rs = await server.createSessionServer(start_time,end_time,typeSession);
     return res.status(200).json(rs);
 };
 const updateSession =async (req, res) => {

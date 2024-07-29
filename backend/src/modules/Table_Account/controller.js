@@ -13,8 +13,8 @@ const getMuiltiAccount = async (req, res) => {
 };
 
 const createAccount = async (req, res) => {
-    const { username, password, role_id } = req.body;
-    const result = await server.createAccountServer(username, password, role_id);
+
+    const result = await server.createAccountServer(req.body);
     return res.status(200).json(result);
 };
 
