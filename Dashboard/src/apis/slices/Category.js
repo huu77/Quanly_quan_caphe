@@ -13,8 +13,36 @@ const CategoryApi = createApi({
         GetAllCategory: build.query({
             query: () => ({ url: '/muiltiCategory', method: 'GET' }),
         }),
+        GetOneCategory: build.query({
+            query: (Categoryid) => ({
+                url: `/oneCategory/${Categoryid}`,
+                method: "get",
+
+            }),
+        }),
+        updateCategory: build.mutation({
+            query: (body) => ({
+                url: `/updateCategory`,
+                method: "PUT",
+                data: body,
+            }),
+        }),
+        createCategory: build.mutation({
+            query: (body) => ({
+                url: `/createCategory`,
+                method: "POST",
+                data: body,
+            }),
+        }),
+        DeleteCategory: build.mutation({
+            query: (Categoryid) => ({
+                url: `/deleteCategory/${Categoryid}`,
+                method: "DELETE",
+
+            }),
+        }),
     }),
 });
 
-export const { useGetAllCategoryQuery } = CategoryApi;
+export const { useGetAllCategoryQuery, useGetOneCategoryQuery, useDeleteCategoryMutation, useUpdateCategoryMutation, useCreateCategoryMutation } = CategoryApi;
 export default CategoryApi;
