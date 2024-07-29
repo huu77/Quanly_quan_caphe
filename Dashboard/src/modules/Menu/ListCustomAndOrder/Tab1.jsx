@@ -11,7 +11,7 @@ const Tab1 = () => {
         <thead>
           <tr>
             <th></th>
-            <th>Name</th>
+            <th>Tên</th>
             <th>Job</th>
             <th>Favorite Color</th>
           </tr>

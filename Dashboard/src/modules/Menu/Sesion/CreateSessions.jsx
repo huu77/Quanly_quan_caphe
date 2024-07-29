@@ -1,65 +1,14 @@
-import React, { useState } from "react";
-import DayPickerCompoment from "./DayPickerCompoment";
-
-const employees = [
-  {
-    id: 1,
-    name: "John Doe",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 4,
-    name: "John Doe",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 5,
-    name: "Jane Smith",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 6,
-    name: "Alice Johnson",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 7,
-    name: "John Doe",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 8,
-    name: "Jane Smith",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 9,
-    name: "Alice Johnson",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-];
+import React, { useEffect, useState } from "react";
+import { useGetAllNVToTypeQuery } from "../../../apis/slices/Session";
 
 const CreateSessions = () => {
   const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [formChecked, setFormChecked] = useState({
+    staff: false,
+    bartender: false,
+  });
+  const [getQueryString, setQueryString] = useState("");
+  const { data, refetch } = useGetAllNVToTypeQuery(getQueryString);
 
   const toggleEmployee = (id) => {
     setSelectedEmployees((prevSelected) =>
@@ -74,7 +23,34 @@ const CreateSessions = () => {
     console.log("Tạo phiên làm việc cho các nhân viên:", selectedEmployees);
     document.getElementById("my_modal_3").showModal();
   };
+  const handleChangeInput = (e) => {
+    const { name, checked } = e.target;
+    setFormChecked((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
+  };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      let queryString = "";
+
+      if (formChecked.staff && !formChecked.bartender) {
+        queryString = "roleIds=1";
+      } else if (!formChecked.staff && formChecked.bartender) {
+        queryString = "roleIds=2";
+      } else if (formChecked.staff && formChecked.bartender) {
+        queryString = "roleIds=1&roleIds=2"; // Đổi thành 'roleIds=1,2'
+      } else if (!formChecked.staff && !formChecked.bartender) {
+        queryString = "";
+      }
+
+      setQueryString(queryString);
+      await refetch();
+    };
+
+    fetchData();
+  }, [formChecked]);
   return (
     <div className="p-4">
       <div className="flex justify-start items-center gap-4">
@@ -85,7 +61,9 @@ const CreateSessions = () => {
             <span className="label-text">Nhân viên phục vụ</span>
             <input
               type="checkbox"
-              defaultChecked
+              name="staff"
+              checked={formChecked.staff}
+              onChange={handleChangeInput}
               className="checkbox checkbox-accent"
             />
           </label>
@@ -95,14 +73,16 @@ const CreateSessions = () => {
             <span className="label-text">Nhân viên quầy</span>
             <input
               type="checkbox"
-              defaultChecked
+              name="bartender"
+              checked={formChecked.bartender}
+              onChange={handleChangeInput}
               className="checkbox checkbox-success"
             />
           </label>
         </div>
       </div>
       <div className="grid grid-cols-3 gap-4">
-        {employees.map((employee) => (
+        {data?.data?.map((employee) => (
           <div
             key={employee.id}
             className="flex items-center justify-start gap-2"
@@ -114,11 +94,13 @@ const CreateSessions = () => {
               onChange={() => toggleEmployee(employee.id)}
             />
             <div className="flex flex-col">
-              <span className="ml-2 font-bold">{employee.name}</span>
-              <span className="ml-2">{employee.role}</span>
+              <span className="ml-2 font-bold">
+                {employee.lastname + " " + employee.firstname}
+              </span>
+              <span className="ml-2">{employee.name}</span>
             </div>
             <img
-              src={employee.avatar}
+              src={"https://via.placeholder.com/150"}
               alt={employee.name}
               className="w-12 h-12 rounded-lg ml-2"
             />

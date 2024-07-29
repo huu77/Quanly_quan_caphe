@@ -23,7 +23,7 @@ const Tab2 = () => {
   const handleShowModal = () => {
     document.getElementById("modalupdatestatustable").showModal();
   };
-  [getTextUpdate,setTextUpdate] = useState("")
+  const [getTextUpdate,setTextUpdate] = useState("")
 const handleUpdate=()=>{
 
 }

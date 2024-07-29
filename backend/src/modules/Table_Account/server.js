@@ -284,6 +284,64 @@ const refreshtokenServer = async (refreshToken) => {
     return ResponseStatus.createResponse(500, error.message);
   }
 };
+
+const getNvTotype = async (roleIds) => {
+  let roleIdsArray;
+  if (roleIds === undefined) {
+    const sql1 = `SELECT A.id, P.firstname ,P.lastname ,R.name FROM Account A INNER JOIN Role R   ON A.role_id = R.id  INNER JOIN Profile P ON A.id = P.account_id   `;
+    try {
+      // Execute the query with the role IDs array
+      const [results1] = await pool.query(sql1, roleIdsArray);
+
+      // Check if results are empty
+      if (results1.length === 0) {
+        return ResponseStatus.createResponse(404, null);
+      }
+
+      // Return the successful response with results1
+      return ResponseStatus.createResponse(200, results1);
+    } catch (error) {
+      console.error("Database query error:", error);
+      // Return error response
+      return ResponseStatus.createResponse(500, error.message);
+    }
+  }
+  
+  if (typeof roleIds === "string") {
+    roleIdsArray = [parseInt(roleIds, 10)];
+  } else {
+    // Split role IDs and convert them to integers
+    roleIdsArray = roleIds.map((id) => parseInt(id, 10));
+  }
+
+  // Validate the role IDs
+  if (roleIdsArray.some(isNaN)) {
+    return ResponseStatus.createResponse(400, "Invalid role IDs");
+  }
+
+  // Generate placeholders for the SQL query
+  const placeholders = roleIdsArray.map(() => "?").join(",");
+
+  // Construct the SQL query
+  const sql = `SELECT A.id, P.firstname ,P.lastname ,R.name FROM Account A INNER JOIN Role R   ON A.role_id = R.id  INNER JOIN Profile P ON A.id = P.account_id  WHERE A.role_id IN (${placeholders})`;
+
+  try {
+    // Execute the query with the role IDs array
+    const [results] = await pool.query(sql, roleIdsArray);
+
+    // Check if results are empty
+    if (results.length === 0) {
+      return ResponseStatus.createResponse(404, null);
+    }
+
+    // Return the successful response with results
+    return ResponseStatus.createResponse(200, results);
+  } catch (error) {
+    console.error("Database query error:", error);
+    // Return error response
+    return ResponseStatus.createResponse(500, error.message);
+  }
+};
 module.exports = {
   getAccountServer,
   getMuiltiAccountServer,
@@ -293,4 +351,5 @@ module.exports = {
   loginAccountServer,
   UpdateIsActiveServer,
   refreshtokenServer,
+  getNvTotype,
 };
