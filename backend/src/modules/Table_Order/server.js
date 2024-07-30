@@ -167,7 +167,7 @@ const updateTableStatusAndOrderDetails = async (orderId, items, tableId, res) =>
 
   try {
     for (const [index, item] of items.entries()) {
-      const [productRows] = await pool.query('SELECT name, price FROM Product WHERE id = ?', [item.product_id]);
+      const [productRows] = await pool.query('SELECT name, price FROM Product WHERE id = ?', [item.id]);
       if (productRows.length === 0) {
         // return res.status(404).json();
         return ResponseStatus.createResponse(404, { error: 'Product not found' });
@@ -178,7 +178,7 @@ const updateTableStatusAndOrderDetails = async (orderId, items, tableId, res) =>
       totalAmount += price * item.quantity;
 
       await pool.query('INSERT INTO OrderDetail (item_name, quantity, price, order_id, product_id, status_id) VALUES (?, ?, ?, ?, ?, 1)',
-        [productName, item.quantity, price, orderId, item.product_id]);
+        [productName, item.quantity, price, orderId, item.id]);
 
       // If it's the last item, update the total amount and table status
       if (index === items.length - 1) {

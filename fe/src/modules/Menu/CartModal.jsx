@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useCheckPhoneNumberMutation, useCreateCustomerMutation } from '../../apis/slices/Product';
+import { useCheckPhoneNumberMutation, useCreateCustomerMutation, useCreateOrderMutation } from '../../apis/slices/Product';
 import firebase from './firebase';
 const CartModal = ({ idTable, cart, setCart, closeModal }) => {
   const [step, setStep] = useState('cart');
@@ -9,6 +9,7 @@ const CartModal = ({ idTable, cart, setCart, closeModal }) => {
   const [name, setName] = useState('');
   const [checkPhoneNumber] = useCheckPhoneNumberMutation();
   const [createCustomer] = useCreateCustomerMutation();
+  const [createOrder] = useCreateOrderMutation();
 
   const increaseQuantity = (product) => {
     setCart(cart.map(item =>
@@ -102,23 +103,21 @@ const CartModal = ({ idTable, cart, setCart, closeModal }) => {
   };
 
   const placeOrder = async () => {
-    try {
-      const response = await fetch('/api/order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ phoneNumber, order_details: cart, idTable }),
-      });
-      if (response.ok) {
-        alert('Order placed successfully!');
-        setCart([]);
-        closeModal();
-      } else {
-        alert('Failed to place order');
-      }
-    } catch (error) {
-      console.error("Error placing order:", error);
+    const response = await checkPhoneNumber(phoneNumber);
+    // console.log("🚀 ~ placeOrder ~ response:", response)
+    const customer_id = response.data.id;
+    const table_id = idTable;
+    const items = cart
+    console.log("🚀 ~ placeOrder ~ items:", items)
+    const body = JSON.stringify({ customer_id, table_id, items });
+    const res = await createOrder(body);
+    // console.log("🚀 ~ placeOrder ~ res:", res)
+    if (res.data.statusCode === 200 || res.data.statusCode === 201) {
+      alert('Order placed successfully!');
+      setCart([]);
+      closeModal();
+    } else {
+      alert('Failed to place order', res.data.message);
     }
   };
 
@@ -127,30 +126,32 @@ const CartModal = ({ idTable, cart, setCart, closeModal }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-lg">
-        {step === 'cart' && (
+      {step === 'cart' && (
           <>
-            <h2 className="text-xl font-bold mb-4">Your Cart</h2>
+            <h2 className="text-xl font-bold mb-4 text-red-800">Your Cart</h2>
             {cart.length === 0 ? (
-              <p>Your cart is empty.</p>
+              <p className="text-lg font-bold mb-4 text-gray-400">Your cart is empty.</p>
             ) : (
               <>
-                {cart.map((item, index) => (
-                  <div key={index} className="flex justify-between items-center mb-4">
-                    <div className="flex items-center">
-                      <img src={item.image} alt={item.name} className="w-16 h-16 rounded-lg mr-4" />
-                      <div>
-                        <h3 className="text-lg font-semibold">{item.name}</h3>
-                        <p className="text-gray-600">{item.description}</p>
-                        <p className="text-gray-800">${item.price.toFixed(2)}</p>
+                <div className="max-h-60 overflow-y-auto">
+                  {cart.map((item, index) => (
+                    <div key={index} className="flex justify-between items-center mb-4">
+                      <div className="flex items-center">
+                        <img src={item.image} alt={item.name} className="w-16 h-16 rounded-lg mr-4" />
+                        <div>
+                          <h3 className="text-lg font-semibold">{item.name}</h3>
+                          <p className="text-gray-600">{item.description}</p>
+                          <p className="text-gray-800">${item.price.toFixed(2)}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <button className="btn btn-xs btn-error" onClick={() => decreaseQuantity(item)}>-</button>
+                        <span className="mx-2">{item.quantity}</span>
+                        <button className="btn btn-xs btn-success" onClick={() => increaseQuantity(item)}>+</button>
                       </div>
                     </div>
-                    <div className="flex items-center">
-                      <button className="btn btn-xs btn-error" onClick={() => decreaseQuantity(item)}>-</button>
-                      <span className="mx-2">{item.quantity}</span>
-                      <button className="btn btn-xs btn-success" onClick={() => increaseQuantity(item)}>+</button>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
                 <div className="text-right font-bold text-xl">
                   Total: ${totalPrice.toFixed(2)}
                 </div>
@@ -202,8 +203,9 @@ const CartModal = ({ idTable, cart, setCart, closeModal }) => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="input input-bordered w-full mb-4"
+              className="input input-bordered w-full mb-4 bg-white"
               placeholder="Name"
+
             />
             <div id="recaptcha-container1"></div>
             <div className="flex justify-end mt-4">
