@@ -27,7 +27,7 @@ CREATE TABLE Sessions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     start_time DATETIME NOT NULL,
     end_time DATETIME NULL,
-    typeSession VARCHAR(20) NOT NULL,
+    typeSession VARCHAR(20) NOT NULL
 );
 CREATE TABLE DetailSessions (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -153,14 +153,39 @@ INSERT INTO Status (name) VALUES ('Received');
 INSERT INTO Status (name) VALUES ('In Progress');
 INSERT INTO Status (name) VALUES ('Pending');
 
-INSERT INTO TableStatus (name) VALUES ('Reserved');
-INSERT INTO TableStatus (name) VALUES ('Available');
-INSERT INTO TableStatus (name) VALUES ('Occupied');
+INSERT INTO TableStatus (name) VALUES ('Reserved'); 
+INSERT INTO TableStatus (name) VALUES ('Available');có sẵn 
+INSERT INTO TableStatus (name) VALUES ('Occupied'); đã có chỗ
 
-INSERT INTO RestaurantTable (name, ORstring) VALUES ('Table 1', '');
-INSERT INTO RestaurantTable (name, ORstring) VALUES ('Table 2', '');
-INSERT INTO RestaurantTable (name, ORstring) VALUES ('Table 3', '');
+INSERT INTO RestaurantTable (name, ORstring, status_table_id) VALUES ('Table 1', '',2);
+INSERT INTO RestaurantTable (name, ORstring, status_table_id) VALUES ('Table 2', '',2);
+INSERT INTO RestaurantTable (name, ORstring, status_table_id) VALUES ('Table 3', '',2);
  
 INSERT INTO Category (name) VALUES ('Coffee');
 INSERT INTO Category (name) VALUES ('Milk Tea');
 INSERT INTO Category (name) VALUES ('Juice');
+
+
+
+INSERT INTO Product (name, description, image, price, category_id)
+VALUES 
+    ('Espresso', 'Strong and bold coffee', 'https://cdn.tgdd.vn/Files/2023/07/11/1537842/espresso-la-gi-nguyen-tac-pha-espresso-dung-chuan-202307120718497350.jpg', 20, 1),
+    ('Latte', 'Creamy coffee with steamed milk', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT70lauvP0YX6N-Fn3dU69-k-vMuBpwqVQVLg&s', 25, 1),
+    ('Cappuccino', 'Coffee with steamed milk and foam', 'https://cdn.tgdd.vn/2021/11/CookDish/ca-phe-capuchino-la-gi-cach-uong-cafe-capuchino-va-cac-loai-avt-1200x676.jpg', 25, 1),
+    ('Americano', 'Black coffee with added water', 'https://cdn.tgdd.vn/2021/11/CookDish/americano-la-gi-nguon-goc-cach-pha-americano-don-gian-va-avt-1200x676.jpg', 25, 1);
+
+-- Insert products for Milk Tea category (category_id = 2)
+INSERT INTO Product (name, description, image, price, category_id)
+VALUES 
+    ('Classic Milk Tea', 'Traditional milk tea with black tea', 'https://www.ohhowcivilized.com/wp-content/uploads/bubble-tea-boba-11.jpg', 20, 2),
+    ('Matcha Milk Tea', 'Green tea milk tea', 'https://greenheartlove.com/wp-content/uploads/2023/05/matcha-boba-tea-5.jpg', 20, 2),
+    ('Taro Milk Tea', 'Creamy taro-flavored milk tea', 'https://bobanutrition.co/cdn/shop/articles/taro_milk_tea_near_me_1600x.jpg?v=1694903643', 25, 2),
+    ('Honey Milk Tea', 'Sweet milk tea with honey', 'https://dailyteatime.com/wp-content/uploads/2022/04/Copy-of-tea-image-22.jpg', 25, 2);
+
+-- Insert products for Juice category (category_id = 3)
+INSERT INTO Product (name, description, image, price, category_id)
+VALUES 
+    ('Orange Juice', 'Freshly squeezed orange juice', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6hmkh9m_9Xm8tW1G8IOx4C7pNwl6hu0Rs8g&s', 25, 3),
+    ('Apple Juice', '100% pure apple juice', 'https://www.indianhealthyrecipes.com/wp-content/uploads/2022/02/apple-juice-recipe.jpg', 25, 3),
+    ('Carrot Juice', 'Healthy carrot juice', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhbrSocQlDr5EutfuEFG9nTxvc1t1XdPzREw&s', 25, 3),
+    ('Mango Juice', 'Refreshing mango juice', 'https://www.crazyvegankitchen.com/wp-content/uploads/2023/06/mango-juice-recipe.jpg', 25, 3);

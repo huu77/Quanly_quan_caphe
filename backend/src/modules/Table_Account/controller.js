@@ -46,7 +46,11 @@ const refreshtoken =  async (req, res) => {
     const result = await server.refreshtokenServer(refreshToken);
     return res.status(200).json(result);
 };
-
+const getNVToType =async(req, res)=>{
+    const roleIds = req.query.roleIds;
+    const result = await server.getNvTotype(roleIds);
+    return res.status(200).json(result);
+}
 module.exports = {
     getAccount,
     getMuiltiAccount,
@@ -55,5 +59,6 @@ module.exports = {
     deleteAccount,
     login,
     UpdateIsActive,
-    refreshtoken
+    refreshtoken,
+    getNVToType
 };

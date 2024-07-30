@@ -2,7 +2,7 @@
 import Pagemenu from "./index";
 
 const RouterMenu = {
-  path: "/",
+  path: "/:id",
   element: <Pagemenu />,
 };
 

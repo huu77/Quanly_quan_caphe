@@ -12,8 +12,8 @@ const StatusApi = createApi({
   endpoints: (build) => ({
     getsStatusTable: build.query({
       query: () => ({
-        url: `/muiltiStatusTable`,
-        method: "GET",
+        url: '/muiltiStatusTable',
+        method: 'GET',
       }),
       providesTags: ['StatusTable'],
     }),
@@ -28,7 +28,7 @@ const StatusApi = createApi({
     getsStatus: build.query({
       query: () => ({
         url: `/muiltiStatus`,
-        method: "GET",
+        method: "get",
       }),
       providesTags: ['StatusTable'],
     }),
@@ -43,5 +43,5 @@ const StatusApi = createApi({
   }),
 });
 
-export const { useGetsStatusTableQuery, usePostStatusTableMutation ,useGetsStatusQuery,usePostStatusMutation} = StatusApi;
+export const { } = StatusApi;
 export default StatusApi;

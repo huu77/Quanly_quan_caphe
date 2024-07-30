@@ -5,7 +5,7 @@ const API_URL = import.meta.env.VITE_APP_URL;
 
 const TableApi = createApi({
   reducerPath: "TableApi",
-  tagTypes: ['Table'], 
+  tagTypes: ["Table", "StatusTable", "Status"],
   baseQuery: axiosBaseQuery({
     baseUrl: API_URL,
   }),
@@ -18,14 +18,14 @@ const TableApi = createApi({
         method: "POST",
         data: body,
       }),
-      invalidatesTags: ['Table'], 
+      invalidatesTags: ["Table"],
     }),
     getAllTable: build.query({
       query: () => ({
         url: `/muiltiTable`,
         method: "GET",
       }),
-      providesTags: ['Table'],
+      providesTags: ["Table"],
     }),
     putUpdateTable: build.mutation({
       query: (body) => ({
@@ -33,10 +33,58 @@ const TableApi = createApi({
         method: "PUT",
         data: body,
       }),
-      invalidatesTags: ['Table'], 
+      invalidatesTags: ["Table"],
     }),
+    getsStatusTable: build.query({
+      query: () => ({
+        url: "/muiltiStatusTable",
+        method: "GET",
+      }),
+      providesTags: ["StatusTable"],
+    }),
+    postStatusTable: build.mutation({
+      query: (body) => ({
+        url: `/createStatusTable`,
+        method: "POST",
+        data: body,
+      }),
+      invalidatesTags: ["StatusTable"],
+    }),
+    putStatusTable: build.mutation({
+      query: (body) => ({
+        url: `/updateStatusTable`,
+        method: "PUT",
+        data: body,
+      }),
+      invalidatesTags: ["StatusTable"],
+    }),
+    getsStatus: build.query({
+      query: () => ({
+        url: `/muiltiStatus`,
+        method: "get",
+      }),
+      providesTags: ["Status"],
+    }),
+    postStatus: build.mutation({
+      query: (body) => ({
+        url: `/createStatus`,
+        method: "POST",
+        data: body,
+      }),
+      invalidatesTags: ["Status"],
+    }),
+
   }),
 });
 
-export const { usePostTableMutation ,useGetAllTableQuery,usePutUpdateTableMutation } = TableApi;
+export const {
+  usePostTableMutation,
+  useGetAllTableQuery,
+  usePutUpdateTableMutation,
+  useGetsStatusTableQuery,
+  usePostStatusTableMutation,
+  usePutStatusTableMutation,
+  useGetsStatusQuery,
+  usePostStatusMutation,
+} = TableApi;
 export default TableApi;

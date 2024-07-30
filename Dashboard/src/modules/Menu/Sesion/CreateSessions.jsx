@@ -1,65 +1,23 @@
-import React, { useState } from "react";
-import DayPickerCompoment from "./DayPickerCompoment";
-
-const employees = [
-  {
-    id: 1,
-    name: "John Doe",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 4,
-    name: "John Doe",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 5,
-    name: "Jane Smith",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 6,
-    name: "Alice Johnson",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 7,
-    name: "John Doe",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 8,
-    name: "Jane Smith",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-  {
-    id: 9,
-    name: "Alice Johnson",
-    avatar: "https://via.placeholder.com/150",
-    role: "Staff",
-  },
-];
+import React, { useEffect, useState } from "react";
+import {
+  useGetAllDetailSessionQuery,
+  useGetAllNVToTypeQuery,
+  useGetAllSessionQuery,
+  usePostCreateSessionDetailMutation,
+} from "../../../apis/slices/Session";
+import { format, parseISO } from "date-fns";
+import { toast } from "react-toastify";
+import ModelTable from "./ModelTable";
 
 const CreateSessions = () => {
   const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [formChecked, setFormChecked] = useState({
+    staff: false,
+    bartender: false,
+  });
+  const [getQueryString, setQueryString] = useState("");
+  const [selectedShift, setSelectedShift] = useState(""); // State để lưu trữ ca làm việc chọn
+  const { data, refetch } = useGetAllNVToTypeQuery(getQueryString);
 
   const toggleEmployee = (id) => {
     setSelectedEmployees((prevSelected) =>
@@ -70,11 +28,62 @@ const CreateSessions = () => {
   };
 
   const handleCreateSession = () => {
-    // Xử lý logic tạo phiên làm việc ở đây
-    console.log("Tạo phiên làm việc cho các nhân viên:", selectedEmployees);
     document.getElementById("my_modal_3").showModal();
   };
 
+  const handleChangeInput = (e) => {
+    const { name, checked } = e.target;
+    setFormChecked((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      let queryString = "";
+
+      if (formChecked.staff && !formChecked.bartender) {
+        queryString = "roleIds=1";
+      } else if (!formChecked.staff && formChecked.bartender) {
+        queryString = "roleIds=2";
+      } else if (formChecked.staff && formChecked.bartender) {
+        queryString = "roleIds=1&roleIds=2"; // Đổi thành 'roleIds=1,2'
+      } else if (!formChecked.staff && !formChecked.bartender) {
+        queryString = "";
+      }
+
+      setQueryString(queryString);
+      await refetch();
+    };
+
+    fetchData();
+  }, [formChecked]);
+  const { data: Data } = useGetAllSessionQuery();
+  const [CreatedDetailSession] = usePostCreateSessionDetailMutation();
+  const handleClick = async () => {
+    console.log("Ca làm việc chọn:", selectedShift);
+    console.log("ID nhân viên:", selectedEmployees);
+    try {
+      const kq = await CreatedDetailSession({
+        session_id: selectedShift,
+        arr: selectedEmployees,
+      });
+      console.log(kq);
+      if (kq.data.statusCode === 201) {
+        toast.success("Tạo thành công!");
+      } else {
+        toast.error("Tạo thất bại");
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+  const { data: DataDetailSession } = useGetAllDetailSessionQuery();
+const handleClickShowModalSeeNV =(index)=>{
+
+  document.getElementById(index).showModal()
+}
   return (
     <div className="p-4">
       <div className="flex justify-start items-center gap-4">
@@ -85,7 +94,9 @@ const CreateSessions = () => {
             <span className="label-text">Nhân viên phục vụ</span>
             <input
               type="checkbox"
-              defaultChecked
+              name="staff"
+              checked={formChecked.staff}
+              onChange={handleChangeInput}
               className="checkbox checkbox-accent"
             />
           </label>
@@ -95,14 +106,16 @@ const CreateSessions = () => {
             <span className="label-text">Nhân viên quầy</span>
             <input
               type="checkbox"
-              defaultChecked
+              name="bartender"
+              checked={formChecked.bartender}
+              onChange={handleChangeInput}
               className="checkbox checkbox-success"
             />
           </label>
         </div>
       </div>
       <div className="grid grid-cols-3 gap-4">
-        {employees.map((employee) => (
+        {data?.data?.map((employee) => (
           <div
             key={employee.id}
             className="flex items-center justify-start gap-2"
@@ -114,11 +127,13 @@ const CreateSessions = () => {
               onChange={() => toggleEmployee(employee.id)}
             />
             <div className="flex flex-col">
-              <span className="ml-2 font-bold">{employee.name}</span>
-              <span className="ml-2">{employee.role}</span>
+              <span className="ml-2 font-bold">
+                {employee.lastname + " " + employee.firstname}
+              </span>
+              <span className="ml-2">{employee.name}</span>
             </div>
             <img
-              src={employee.avatar}
+              src={"https://via.placeholder.com/150"}
               alt={employee.name}
               className="w-12 h-12 rounded-lg ml-2"
             />
@@ -129,7 +144,7 @@ const CreateSessions = () => {
         Tạo Phiên Làm Việc
       </button>
       <dialog id="my_modal_3" className="modal">
-        <div className="modal-box w-[600px] ">
+        <div className="modal-box w-[600px]">
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
@@ -141,25 +156,28 @@ const CreateSessions = () => {
             <label htmlFor="sessiondate" className="font-bold text-lg">
               Danh sách ca trong tuần tới
             </label>
-            <select className="select select-accent w-full max-w-xs">
-              <option disabled selected>
-                Chọn ngày
-              </option>
-              <option>Thứ 2 ngày 1/1/2021</option>
-              <option>Thứ 3 ngày 1/1/2021</option>
-              <option>Thứ 4 ngày 1/1/2021</option>
-            </select>
-            <select className="select select-accent w-full max-w-xs">
+
+            <select
+              className="select select-accent w-full max-w-xs"
+              onChange={(e) => setSelectedShift(e.target.value)}
+              value={selectedShift}
+            >
               <option disabled selected>
                 Chọn ca làm
               </option>
-              <option>Sáng</option>
-              <option>Chiều</option>
-              <option>Tối</option>
-              <option>Làm toàn thời gian</option>
+              {Data?.data.map((i, index) => (
+                <option value={i.id} key={index}>{`Thứ ${
+                  i.day_of_week
+                } - Ngày ${format(parseISO(i.start_time), "dd/MM/yyyy")} - Ca ${
+                  i.typeSession
+                }`}</option>
+              ))}
             </select>
+
             <div className="flex justify-start items-center gap-5">
-              <button className="btn btn-outline">Tạo ca làm</button>
+              <button className="btn btn-outline" onClick={handleClick}>
+                Tạo ca làm
+              </button>
               <form method="dialog">
                 <button className="btn btn-outline btn-error">Hủy</button>
               </form>
@@ -167,6 +185,50 @@ const CreateSessions = () => {
           </div>
         </div>
       </dialog>
+{/* table show ca làm việc */}
+      <div className="overflow-x-auto mt-5 flex flex-col justify-start items-center">
+        <h1 className="font-bold"> DANH SÁCH CHI TIẾT CA LÀM</h1>
+        <table className="table">
+          {/* head */}
+          <thead>
+            <tr>
+              <th></th>
+              <th>Ngày</th>
+              <th>Ca</th>
+              <th>Số lương nhân viên</th>
+            </tr>
+          </thead>
+          <tbody>
+            {DataDetailSession?.data.map((i, index) => (
+              <>
+                <tr
+                  key={index}
+                  className="hover:bg-blue-400 hover:text-white cursor-pointer"
+                  onClick={()=>handleClickShowModalSeeNV(index)}
+                >
+                  <th>{index + 1}</th>
+                  <td>{format(parseISO(i.start_time), "dd/MM/yyyy")}</td>
+                  <td>{i.typeSession || "-"}</td>
+                  <td>{i.TOTAL} nhân viên</td>
+                </tr>
+                <dialog id={index} className="modal">
+                  <div className="modal-box">
+                    <ModelTable id={i.session_id}/>
+                    <div className="modal-action">
+                      <form method="dialog">
+                        {/* if there is a button in form, it will close the modal */}
+                        <button className="btn">Close</button>
+                      </form>
+                    </div>
+                  </div>
+                </dialog>
+              </>
+            ))}
+          </tbody>
+        </table>
+      </div>
+ 
+
     </div>
   );
 };
