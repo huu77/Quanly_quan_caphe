@@ -41,8 +41,15 @@ const ProductsApi = createApi({
         data: body,
       }),
     }),
+    createOrder: build.mutation({
+      query: (body) => ({
+        url: `/createOrderByCustomer`,
+        method: "POST",
+        data: body,
+      }),
+    }),
   }),
 });
 
-export const { useGetProductsQuery, useGetMenuQuery, useCheckPhoneNumberMutation, useCreateCustomerMutation, useGetProductByTableQuery } = ProductsApi;
+export const { useGetProductsQuery, useGetMenuQuery, useCheckPhoneNumberMutation, useCreateCustomerMutation, useGetProductByTableQuery, useCreateOrderMutation } = ProductsApi;
 export default ProductsApi;
