@@ -259,6 +259,7 @@ const loginAccountServer = async (username, password) => {
     return ResponseStatus.createResponse(500, error.message);
   }
 };
+
 const refreshtokenServer = async (refreshToken) => {
   const { valid, decoded, error } = decodeToken(refreshToken);
 
@@ -306,7 +307,7 @@ const getNvTotype = async (roleIds) => {
       return ResponseStatus.createResponse(500, error.message);
     }
   }
-  
+
   if (typeof roleIds === "string") {
     roleIdsArray = [parseInt(roleIds, 10)];
   } else {

@@ -2,17 +2,28 @@ import React from "react";
 import { AiOutlineMore } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { toast } from 'react-toastify';
+import { useDeleteAccountMutation } from "@apis/slices/Account";
 
 const Table = ({ data }) => {
+  const [deleteAccount] = useDeleteAccountMutation();
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteAccount(id).unwrap();
+      toast.success("Xóa nhân viên thành công!");
+      // Add logic to refetch or update the table data after deletion
+    } catch (error) {
+      toast.error("Xóa nhân viên thất bại!");
+    }
+  };
+
   return (
     <div className="overflow-x-auto flex flex-col items-center justify-start gap-5">
       <table className="table">
         {/* head */}
         <thead>
           <tr>
-            <th>
-
-            </th>
+            <th></th>
             <th>Họ và tên</th>
             <th>Địa chỉ</th>
             <th>Số điện thoại</th>
@@ -23,9 +34,7 @@ const Table = ({ data }) => {
         <tbody>
           {data?.data?.map((item, index) => (
             <tr key={item.id}>
-              <th>
-
-              </th>
+              <th></th>
               <td>
                 <div className="flex items-center gap-3">
                   <div className="avatar">
@@ -38,7 +47,7 @@ const Table = ({ data }) => {
                   </div>
                   <div>
                     <div className="font-bold">{item.name}</div>
-                    <div className="text-sm opacity-50">{item.address}</div>
+                    <div className="text-sm opacity-50">{item.firstname} {item.lastname}</div>
                   </div>
                 </div>
               </td>
@@ -47,24 +56,20 @@ const Table = ({ data }) => {
               <td>
                 <span className="badge badge-ghost badge-sm">{item.CCCD}</span>
               </td>
-              <td
-                onClick={() => document.getElementById(`my_modal_${item.id}`).showModal()}
-              >
+              <td onClick={() => document.getElementById(`my_modal_${item.id}`).showModal()}>
                 <AiOutlineMore fontSize="24px" />
                 <dialog id={`my_modal_${item.id}`} className="modal">
                   <div className="modal-box">
                     <form method="dialog">
                       {/* if there is a button in form, it will close the modal */}
-                      <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-                        ✕
-                      </button>
+                      <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
                     </form>
                     <div className="w-full p-2">
                       <ul className="menu bg-base-200 rounded-box w-full">
                         <li>
-                          <Link to={'/detailstaff'}>Xem chi tiết</Link>
+                          <Link to={`/detailstaff/${item.id}`}>Xem chi tiết</Link>
                         </li>
-                        <li onClick={() => toast.success("Xóa nhân viên thành công!")} className="text-rose-600">
+                        <li onClick={() => handleDelete(item.id)} className="text-rose-600">
                           <span>Xóa nhân viên</span>
                         </li>
                       </ul>
@@ -76,11 +81,7 @@ const Table = ({ data }) => {
           ))}
         </tbody>
       </table>
-      <div className="join">
-        <button className="join-item btn">«</button>
-        <button className="join-item btn">Page 22</button>
-        <button className="join-item btn">»</button>
-      </div>
+
     </div>
   );
 };

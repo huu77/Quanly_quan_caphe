@@ -67,6 +67,7 @@ const ManageSession = () => {
   };
 
   const { data, refetch } = useGetAllSessionQuery();
+  console.log("🚀 ~ ManageSession ~ data:", data)
   const [postCreateSession] = usePostCreateSessionMutation();
 
   const handleCreate = async () => {
@@ -87,7 +88,7 @@ const ManageSession = () => {
       toast.error(error);
     }
   };
-const [DataF,setDataF] = useState([])
+  const [DataF, setDataF] = useState([])
   const handelSearch = async () => {
     // Example: Adjust the API call or method to use filters
     try {
@@ -97,7 +98,7 @@ const [DataF,setDataF] = useState([])
       const endOfMonthDate = endOfMonth(new Date(year, month - 1));
       const startOfYearDate = startOfYear(new Date(year));
       const endOfYearDate = endOfYear(new Date(year));
-        
+
       // Modify your API call or state update to apply these filters
       // e.g., pass these dates to your API or use in state for filtering
       console.log("Filter by:", { startOfMonthDate, endOfMonthDate, startOfYearDate, endOfYearDate });

@@ -80,10 +80,11 @@ const CreateSessions = () => {
     }
   };
   const { data: DataDetailSession } = useGetAllDetailSessionQuery();
-const handleClickShowModalSeeNV =(index)=>{
+  console.log("🚀 ~ DataDetailSession:", DataDetailSession)
+  const handleClickShowModalSeeNV = (index) => {
 
-  document.getElementById(index).showModal()
-}
+    document.getElementById(index).showModal()
+  }
   return (
     <div className="p-4">
       <div className="flex justify-start items-center gap-4">
@@ -165,13 +166,15 @@ const handleClickShowModalSeeNV =(index)=>{
               <option disabled selected>
                 Chọn ca làm
               </option>
-              {Data?.data.map((i, index) => (
-                <option value={i.id} key={index}>{`Thứ ${
-                  i.day_of_week
-                } - Ngày ${format(parseISO(i.start_time), "dd/MM/yyyy")} - Ca ${
-                  i.typeSession
-                }`}</option>
-              ))}
+              {Data && Data.data ? (
+                Data?.data.map((i, index) => (
+                  <option value={i.id} key={index}>{`Thứ ${i.day_of_week
+                    } - Ngày ${format(parseISO(i.start_time), "dd/MM/yyyy")} - Ca ${i.typeSession
+                    }`}</option>
+                )))
+                :
+                (<p>chưa có ca làm</p>)
+              }
             </select>
 
             <div className="flex justify-start items-center gap-5">
@@ -185,7 +188,7 @@ const handleClickShowModalSeeNV =(index)=>{
           </div>
         </div>
       </dialog>
-{/* table show ca làm việc */}
+      {/* table show ca làm việc */}
       <div className="overflow-x-auto mt-5 flex flex-col justify-start items-center">
         <h1 className="font-bold"> DANH SÁCH CHI TIẾT CA LÀM</h1>
         <table className="table">
@@ -199,35 +202,41 @@ const handleClickShowModalSeeNV =(index)=>{
             </tr>
           </thead>
           <tbody>
-            {DataDetailSession?.data.map((i, index) => (
-              <>
-                <tr
-                  key={index}
-                  className="hover:bg-blue-400 hover:text-white cursor-pointer"
-                  onClick={()=>handleClickShowModalSeeNV(index)}
-                >
-                  <th>{index + 1}</th>
-                  <td>{format(parseISO(i.start_time), "dd/MM/yyyy")}</td>
-                  <td>{i.typeSession || "-"}</td>
-                  <td>{i.TOTAL} nhân viên</td>
-                </tr>
-                <dialog id={index} className="modal">
-                  <div className="modal-box">
-                    <ModelTable id={i.session_id}/>
-                    <div className="modal-action">
-                      <form method="dialog">
-                        {/* if there is a button in form, it will close the modal */}
-                        <button className="btn">Close</button>
-                      </form>
+            {DataDetailSession && DataDetailSession.data ? (
+              DataDetailSession.data.map((i, index) => (
+                <React.Fragment key={index}>
+                  <tr
+                    className="hover:bg-blue-400 hover:text-white cursor-pointer"
+                    onClick={() => handleClickShowModalSeeNV(index)}
+                  >
+                    <th>{index + 1}</th>
+                    <td>{format(parseISO(i.start_time), "dd/MM/yyyy")}</td>
+                    <td>{i.typeSession || "-"}</td>
+                    <td>{i.TOTAL} nhân viên</td>
+                  </tr>
+                  <dialog id={`modal-${index}`} className="modal">
+                    <div className="modal-box">
+                      <ModelTable id={i.session_id} />
+                      <div className="modal-action">
+                        <form method="dialog">
+                          {/* if there is a button in form, it will close the modal */}
+                          <button className="btn">Close</button>
+                        </form>
+                      </div>
                     </div>
-                  </div>
-                </dialog>
-              </>
-            ))}
+                  </dialog>
+                </React.Fragment>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="text-center">chưa có nhân viên</td>
+              </tr>
+            )}
           </tbody>
+
         </table>
       </div>
- 
+
 
     </div>
   );

@@ -11,7 +11,7 @@ import PageListCustomAndOrder from './ListCustomAndOrder'
 const RouterMenu = {
   path: "/",
   element: <Pagemenu />,
-  children:[
+  children: [
     {
       path: "",
       element: <PageMain />,
@@ -21,7 +21,7 @@ const RouterMenu = {
       element: <PageStaff />,
     },
     {
-      path: "detailstaff",
+      path: "detailstaff/:id",
       element: <PageDetailStaff />,
     },
     {

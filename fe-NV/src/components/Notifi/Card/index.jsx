@@ -4,8 +4,8 @@ function CardNotifi() {
         <div className="flex justify-between px-10 h-[60px] m-3 shadow-md">
 
             <div>
-                <p className="text-[20px] text-gray-500">bàn: </p>
-                <span className="text-gray-500">$:</span>
+                <p className="text-[20px] text-gray-500">bàn:1 </p>
+                <span className="text-gray-500">$:  10000</span>
             </div>
             <div className="flex-col flex gap-1">
                 <button className="bg-green-500 w-[80px] rounded text-white "> đã giao </button>

@@ -4,9 +4,10 @@ import ListCard from '../../components/ListCard'
 
 const index = () => {
   return (
-    <div>
+    <div >
 
       <Header />
+      <p className='text-green-500'>chọn bàn : </p>
       <ListCard />
     </div>
   )

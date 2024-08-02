@@ -1,7 +1,7 @@
 import axiosInstance from "./intances";
 
 
-const axiosBaseQuery = ({ baseUrl } = { baseUrl: "" }) => 
+const axiosBaseQuery = ({ baseUrl } = { baseUrl: "" }) =>
   async ({ url, method, data, params, headers }) => {
     try {
       const result = await axiosInstance({

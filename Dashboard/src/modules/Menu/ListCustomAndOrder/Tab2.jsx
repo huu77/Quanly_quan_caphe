@@ -1,6 +1,11 @@
 import React from "react";
+import { useGetAllOrderQuery } from "../../../apis/slices/Order";
 
 const Tab2 = () => {
+
+
+  const { data } = useGetAllOrderQuery()
+  console.log("🚀 ~ Tab2 ~ data:", data)
   return (
     <>
       <div className="overflow-x-auto">

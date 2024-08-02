@@ -14,10 +14,17 @@ const numberIN = [
   { id: 7, name: "cccd", title: "CCCD" },
 ];
 
+const role = [
+  { id: 1, name: "Nhân viên phục vụ", },
+  { id: 2, name: "Nhân viên quầy", },
+
+];
+
 const Tab1 = () => {
   const showModal = () => {
     document.getElementById("modalCreateNV").showModal();
   };
+
   const { data } = useGetAllProfileQuery(1);
 
   const {
@@ -30,8 +37,14 @@ const Tab1 = () => {
   const [createAccount] = usePostCreateAccountMutation();
 
   const onSubmit = async (formData) => {
+    console.log("🚀 ~ onSubmit ~ formData:", formData)
     try {
-      const response = await createAccount(formData).unwrap();
+      const formDataWithNumberRoleId = {
+        ...formData,
+        role_id: Number(formData.role_id),
+      };
+
+      const response = await createAccount(formDataWithNumberRoleId).unwrap();
       console.log("Response from createAccount:", response);
       toast.success("Tạo nhân viên thành công!");
       document.getElementById("modalCreateNV").close();
@@ -55,7 +68,7 @@ const Tab1 = () => {
       address: "",
       phone: "",
       cccd: "",
-      role_id: null,
+      role_id: null
     });
   }, [reset]);
 
@@ -76,40 +89,39 @@ const Tab1 = () => {
           </div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-2 gap-5">
-              {numberIN.map((i) => (
-                <div className="flex flex-col h-[100px]">
-                  <label
-                    className={` flex items-center gap-2 font-bold ${i.name === "address" ? "col-span-2" : ""}`}
-                    key={i.id}
-                  >
+              {numberIN.map((item) => (
+                <div className="flex flex-col h-[100px]" key={item.id}>
+                  <label className="flex items-center gap-2 font-bold">
+                    {item.title ? item.title.toUpperCase() : ''}
                   </label>
-                  {i.title ? i.title.toUpperCase() : ''}
                   <input
                     type="text"
-                    className=" border p-4 rounded"
-                    placeholder={i.title}
-                    {...register(i.name, { required: `${i.title} không được để trống` })}
+                    className="border p-4 rounded"
+                    placeholder={item.title}
+                    {...register(item.name, { required: `${item.title} không được để trống` })}
                   />
-                  {errors[i.name] && (
-                    <p className="text-red-500 text-sm">{errors[i.name].message}</p>
+                  {errors[item.name] && (
+                    <p className="text-red-500 text-sm">{errors[item.name].message}</p>
                   )}
                 </div>
-
               ))}
-              <div></div>
-              <select
-                className="select select-bordered w-full font-bold col-span-2"
-                {...register("role_id", { required: "Role không được để trống" })}
-              >
-                <option disabled value="">
-                  Chọn role
-                </option>
-                <option value="1">Nhân viên phục vụ</option>
-                <option value="2">Nhân viên quầy</option>
-              </select>
-              {errors.role_id && (
-                <p className="text-red-500 text-sm">{errors.role_id.message}</p>
-              )}
+              <div className="col-span-2">
+                <select
+                  className="select select-bordered w-full font-bold"
+                  {...register("role_id", { required: "Role không được để trống" })}
+                >
+                  <option disabled value="">
+                    Chọn role
+                  </option>
+                  {role.map((item) => (
+
+                    <option value={item.id}>{item.name}</option>
+                  ))}
+                </select>
+                {errors.role_id && (
+                  <p className="text-red-500 text-sm">{errors.role_id.message}</p>
+                )}
+              </div>
             </div>
             <div className="mt-10">
               <button className="btn btn-outline" type="submit">Tạo nhân viên</button>

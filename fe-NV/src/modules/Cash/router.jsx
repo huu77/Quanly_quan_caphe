@@ -2,7 +2,7 @@
 import Cash from "./index";
 
 const RouterCash = {
-    path: "/Cash",
+    path: "/table/:tabelID",
     element: <Cash />,
 };
 

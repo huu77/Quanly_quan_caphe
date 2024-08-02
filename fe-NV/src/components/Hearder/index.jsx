@@ -1,7 +1,17 @@
-
-import React from 'react'
+import React from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const Header = () => {
+    const navigate = useNavigate();
+
+    const logout = () => {
+        // Remove tokens from localStorage
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        // Redirect to the login page
+        navigate('/login');
+    };
+
     return (
         <div className="navbar bg-base-100">
             <div className="navbar-start">
@@ -23,17 +33,14 @@ const Header = () => {
                     <ul
                         tabIndex={0}
                         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-                        <li><a>Homepage</a></li>
-                        <li><a>Portfolio</a></li>
-                        <li><a>About</a></li>
+                        <li><NavLink to="/">Home</NavLink></li>
+                        <li><button onClick={logout}>Logout</button></li>
                     </ul>
                 </div>
             </div>
-            <div className="navbar-center">
-            </div>
+            <div className="navbar-center"></div>
             <div className="navbar-end">
-
-                <button className="btn btn-ghost btn-circle">
+                <NavLink to="/notifi" className="btn btn-ghost btn-circle">
                     <div className="indicator">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -49,10 +56,10 @@ const Header = () => {
                         </svg>
                         <span className="badge badge-xs badge-primary indicator-item"></span>
                     </div>
-                </button>
+                </NavLink>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Header
+export default Header;
